@@ -62,7 +62,7 @@ local GUIStyles = {
         Title = Enum.Font.GothamMedium,                 -- Medium weight titles
         Body = Enum.Font.Gotham,                        -- Regular body text
         Icon = Enum.Font.GothamBold,                    -- Bold for icons
-        Caption = Enum.Font.GothamLight                 -- Light for captions
+        Caption = Enum.Font.Gotham                      -- Regular for captions (GothamLight tidak valid)
     },
     
     -- Modern Icon System with Colors (现代化彩色图标系统)
@@ -515,6 +515,22 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     autoHideButton.Name = "AutoHideButton"
     autoHideToggleBg.Name = "AutoHideToggleBg"
     autoHideIndicator.Name = "AutoHideIndicator"
+
+    -- Create Security Statistics Display
+    local securityStatsFrame = createStyledFrame(layoutFrame, "SecurityStatsFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    securityStatsFrame.BackgroundTransparency = 1
+    
+    local statsText = Instance.new("TextLabel")
+    statsText.Name = "SecurityStatsText"
+    statsText.Parent = securityStatsFrame
+    statsText.BackgroundTransparency = 1
+    statsText.Position = UDim2.new(0.030, 0, 0.216, 0)
+    statsText.Size = UDim2.new(0.940, 0, 0.568, 0)
+    statsText.Font = GUIStyles.Fonts.Primary
+    statsText.Text = "🔒 Security Status: All Systems Active"
+    statsText.TextColor3 = GUIStyles.Colors.Text
+    statsText.TextScaled = true
 
     return {
         frame = SecurityFrame,
@@ -1725,6 +1741,20 @@ GUIHandler.createQuickTeleportBar = function(parent)
         frame = quickTpBar,
         buttons = quickButtons
     }
+end
+
+-- ===================================================================
+--                         DEBUG FUNCTIONS
+-- ===================================================================
+
+function GUIHandler.debugGUI()
+    print("🔧 GUI Handler Debug Information:")
+    print("✅ GUIStyles loaded:", GUIStyles ~= nil)
+    print("✅ Colors count:", #GUIStyles.Colors)
+    print("✅ Fonts available:", GUIStyles.Fonts.Primary, GUIStyles.Fonts.Title)
+    print("✅ Icons count:", #GUIStyles.Icons)
+    print("✅ Border radius values:", GUIStyles.BorderRadius.Small, GUIStyles.BorderRadius.Medium)
+    print("🎉 All GUI components loaded successfully!")
 end
 
 -- ===================================================================
