@@ -219,21 +219,24 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
 
     -- Admin Detection Frame
     local adminFrame = createStyledFrame(layoutFrame, "AdminDetectionFrame", GUIStyles.Sizes.ButtonFrame)
-    local adminButton, adminIndicator = createToggleSystem(adminFrame, "ADMIN DETECTION :", SecuritySettings.AdminDetection)
+    local adminButton, adminToggleBg, adminLabel, adminIndicator, adminStatusText = createToggleSystem(adminFrame, "ADMIN DETECTION :", SecuritySettings.AdminDetection)
     adminButton.Name = "AdminDetectionButton"
-    adminIndicator.Name = "AdminDetectionWarna"
+    adminToggleBg.Name = "AdminDetectionToggleBg"
+    adminIndicator.Name = "AdminDetectionIndicator"
 
     -- Proximity Alert Frame
     local proximityFrame = createStyledFrame(layoutFrame, "ProximityAlertFrame", GUIStyles.Sizes.ButtonFrame)
-    local proximityButton, proximityIndicator = createToggleSystem(proximityFrame, "PROXIMITY ALERT :", SecuritySettings.PlayerProximityAlert)
+    local proximityButton, proximityToggleBg, proximityLabel, proximityIndicator, proximityStatusText = createToggleSystem(proximityFrame, "PROXIMITY ALERT :", SecuritySettings.PlayerProximityAlert)
     proximityButton.Name = "ProximityAlertButton"
-    proximityIndicator.Name = "ProximityAlertWarna"
+    proximityToggleBg.Name = "ProximityAlertToggleBg"
+    proximityIndicator.Name = "ProximityAlertIndicator"
 
     -- Auto Hide Frame
     local autoHideFrame = createStyledFrame(layoutFrame, "AutoHideFrame", GUIStyles.Sizes.ButtonFrame)
-    local autoHideButton, autoHideIndicator = createToggleSystem(autoHideFrame, "AUTO HIDE ON ADMIN :", SecuritySettings.AutoHideOnAdmin)
+    local autoHideButton, autoHideToggleBg, autoHideLabel, autoHideIndicator, autoHideStatusText = createToggleSystem(autoHideFrame, "AUTO HIDE ON ADMIN :", SecuritySettings.AutoHideOnAdmin)
     autoHideButton.Name = "AutoHideButton"
-    autoHideIndicator.Name = "AutoHideWarna"
+    autoHideToggleBg.Name = "AutoHideToggleBg"
+    autoHideIndicator.Name = "AutoHideIndicator"
 
     -- Security Statistics Frame
     local statsFrame = createStyledFrame(layoutFrame, "SecurityStatsFrame", GUIStyles.Sizes.ButtonFrame)
@@ -252,11 +255,17 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     return {
         frame = SecurityFrame,
         adminButton = adminButton,
+        adminToggleBg = adminToggleBg,
         adminIndicator = adminIndicator,
+        adminStatusText = adminStatusText,
         proximityButton = proximityButton,
+        proximityToggleBg = proximityToggleBg,
         proximityIndicator = proximityIndicator,
+        proximityStatusText = proximityStatusText,
         autoHideButton = autoHideButton,
+        autoHideToggleBg = autoHideToggleBg,
         autoHideIndicator = autoHideIndicator,
+        autoHideStatusText = autoHideStatusText,
         statsText = statsText
     }
 end
@@ -286,21 +295,24 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
 
     -- Luck Boost Frame
     local luckFrame = createStyledFrame(layoutFrame, "LuckBoostFrame", GUIStyles.Sizes.ButtonFrame)
-    local luckButton, luckIndicator = createToggleSystem(luckFrame, "LUCK BOOST :", false)
+    local luckButton, luckToggleBg, luckLabel, luckIndicator, luckStatusText = createToggleSystem(luckFrame, "LUCK BOOST :", false)
     luckButton.Name = "LuckBoostButton"
-    luckIndicator.Name = "LuckBoostWarna"
+    luckToggleBg.Name = "LuckBoostToggleBg"
+    luckIndicator.Name = "LuckBoostIndicator"
 
     -- Weather Boost Frame
     local weatherFrame = createStyledFrame(layoutFrame, "WeatherBoostFrame", GUIStyles.Sizes.ButtonFrame)
-    local weatherButton, weatherIndicator = createToggleSystem(weatherFrame, "WEATHER BOOST :", false)
+    local weatherButton, weatherToggleBg, weatherLabel, weatherIndicator, weatherStatusText = createToggleSystem(weatherFrame, "WEATHER BOOST :", false)
     weatherButton.Name = "WeatherBoostButton"
-    weatherIndicator.Name = "WeatherBoostWarna"
+    weatherToggleBg.Name = "WeatherBoostToggleBg"
+    weatherIndicator.Name = "WeatherBoostIndicator"
 
     -- Smart Fishing Frame
     local smartFrame = createStyledFrame(layoutFrame, "SmartFishingFrame", GUIStyles.Sizes.ButtonFrame)
-    local smartButton, smartIndicator = createToggleSystem(smartFrame, "SMART FISHING :", false)
+    local smartButton, smartToggleBg, smartLabel, smartIndicator, smartStatusText = createToggleSystem(smartFrame, "SMART FISHING :", false)
     smartButton.Name = "SmartFishingButton"
-    smartIndicator.Name = "SmartFishingWarna"
+    smartToggleBg.Name = "SmartFishingToggleBg"
+    smartIndicator.Name = "SmartFishingIndicator"
 
     -- Fish Value Filter Frame
     local fishValueFrame = createStyledFrame(layoutFrame, "FishValueFrame", GUIStyles.Sizes.ButtonFrame)
@@ -349,11 +361,17 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     return {
         frame = AdvancedFrame,
         luckButton = luckButton,
+        luckToggleBg = luckToggleBg,
         luckIndicator = luckIndicator,
+        luckStatusText = luckStatusText,
         weatherButton = weatherButton,
+        weatherToggleBg = weatherToggleBg,
         weatherIndicator = weatherIndicator,
+        weatherStatusText = weatherStatusText,
         smartButton = smartButton,
+        smartToggleBg = smartToggleBg,
         smartIndicator = smartIndicator,
+        smartStatusText = smartStatusText,
         fishValueTextBox = fishValueTextBox,
         advStatsText = advStatsText
     }
@@ -717,7 +735,7 @@ function GUIHandler.makeDraggable(element, shadowElement1, shadowElement2)
     end)
     
     UserInputService.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+        if input.UserInputType == Enum.UserInputType.MouseMovement and dragging and startPos then
             local delta = input.Position - dragStart
             element.Position = UDim2.new(
                 startPos.X.Scale,
@@ -773,7 +791,13 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
         connections[#connections + 1] = guiComponents.security.adminButton.MouseButton1Click:Connect(function()
             print("🔒 Admin Detection button clicked!")
             SecuritySettings.AdminDetection = not SecuritySettings.AdminDetection
-            GUIHandler.updateToggleButton(guiComponents.security.adminButton, guiComponents.security.adminIndicator, SecuritySettings.AdminDetection)
+            GUIHandler.updateToggleButton(
+                guiComponents.security.adminButton, 
+                guiComponents.security.adminToggleBg, 
+                SecuritySettings.AdminDetection,
+                guiComponents.security.adminIndicator,
+                guiComponents.security.adminStatusText
+            )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(SecuritySettings.AdminDetection and "🔒 Admin Detection enabled!" or "🔒 Admin Detection disabled!", SecuritySettings.AdminDetection and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
             end
@@ -785,7 +809,13 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
         connections[#connections + 1] = guiComponents.security.proximityButton.MouseButton1Click:Connect(function()
             print("📡 Proximity Alert button clicked!")
             SecuritySettings.PlayerProximityAlert = not SecuritySettings.PlayerProximityAlert
-            GUIHandler.updateToggleButton(guiComponents.security.proximityButton, guiComponents.security.proximityIndicator, SecuritySettings.PlayerProximityAlert)
+            GUIHandler.updateToggleButton(
+                guiComponents.security.proximityButton, 
+                guiComponents.security.proximityToggleBg, 
+                SecuritySettings.PlayerProximityAlert,
+                guiComponents.security.proximityIndicator,
+                guiComponents.security.proximityStatusText
+            )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(SecuritySettings.PlayerProximityAlert and "📡 Proximity Alert enabled!" or "📡 Proximity Alert disabled!", SecuritySettings.PlayerProximityAlert and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
             end
@@ -797,7 +827,13 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
         connections[#connections + 1] = guiComponents.security.autoHideButton.MouseButton1Click:Connect(function()
             print("🙈 Auto Hide button clicked!")
             SecuritySettings.AutoHideOnAdmin = not SecuritySettings.AutoHideOnAdmin
-            GUIHandler.updateToggleButton(guiComponents.security.autoHideButton, guiComponents.security.autoHideIndicator, SecuritySettings.AutoHideOnAdmin)
+            GUIHandler.updateToggleButton(
+                guiComponents.security.autoHideButton, 
+                guiComponents.security.autoHideToggleBg, 
+                SecuritySettings.AutoHideOnAdmin,
+                guiComponents.security.autoHideIndicator,
+                guiComponents.security.autoHideStatusText
+            )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(SecuritySettings.AutoHideOnAdmin and "🙈 Auto Hide enabled!" or "🙈 Auto Hide disabled!", SecuritySettings.AutoHideOnAdmin and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
             end
@@ -810,7 +846,13 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
         connections[#connections + 1] = guiComponents.advanced.luckButton.MouseButton1Click:Connect(function()
             print("🍀 Luck Boost button clicked!")
             Settings.LuckBoost = not Settings.LuckBoost
-            GUIHandler.updateToggleButton(guiComponents.advanced.luckButton, guiComponents.advanced.luckIndicator, Settings.LuckBoost)
+            GUIHandler.updateToggleButton(
+                guiComponents.advanced.luckButton, 
+                guiComponents.advanced.luckToggleBg, 
+                Settings.LuckBoost,
+                guiComponents.advanced.luckIndicator,
+                guiComponents.advanced.luckStatusText
+            )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(Settings.LuckBoost and "🍀 Luck Boost enabled!" or "🍀 Luck Boost disabled!", Settings.LuckBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
             end
@@ -822,7 +864,13 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
         connections[#connections + 1] = guiComponents.advanced.weatherButton.MouseButton1Click:Connect(function()
             print("🌦️ Weather Boost button clicked!")
             Settings.WeatherBoost = not Settings.WeatherBoost
-            GUIHandler.updateToggleButton(guiComponents.advanced.weatherButton, guiComponents.advanced.weatherIndicator, Settings.WeatherBoost)
+            GUIHandler.updateToggleButton(
+                guiComponents.advanced.weatherButton, 
+                guiComponents.advanced.weatherToggleBg, 
+                Settings.WeatherBoost,
+                guiComponents.advanced.weatherIndicator,
+                guiComponents.advanced.weatherStatusText
+            )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(Settings.WeatherBoost and "🌦️ Weather Boost enabled!" or "🌦️ Weather Boost disabled!", Settings.WeatherBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
             end
@@ -834,7 +882,13 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
         connections[#connections + 1] = guiComponents.advanced.smartButton.MouseButton1Click:Connect(function()
             print("🧠 Smart Fishing button clicked!")
             Settings.SmartFishing = not Settings.SmartFishing
-            GUIHandler.updateToggleButton(guiComponents.advanced.smartButton, guiComponents.advanced.smartIndicator, Settings.SmartFishing)
+            GUIHandler.updateToggleButton(
+                guiComponents.advanced.smartButton, 
+                guiComponents.advanced.smartToggleBg, 
+                Settings.SmartFishing,
+                guiComponents.advanced.smartIndicator,
+                guiComponents.advanced.smartStatusText
+            )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(Settings.SmartFishing and "🧠 Smart Fishing enabled!" or "🧠 Smart Fishing disabled!", Settings.SmartFishing and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
             end
