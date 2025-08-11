@@ -1015,6 +1015,454 @@ function GUIHandler.createPanelSwitcher(guiComponents, callbacks)
     return showPanel
 end
 
+-- Add new teleport functions to GUIHandler
+GUIHandler.createTeleportPanel = function(parent, tpFolder)
+    -- Create modern teleport panel with categories
+    local TeleportFrame = Instance.new("ScrollingFrame")
+    TeleportFrame.Name = "TeleportFrame"
+    TeleportFrame.Parent = parent
+    TeleportFrame.Active = true
+    TeleportFrame.BackgroundTransparency = 1
+    TeleportFrame.Position = UDim2.new(0.376, 0, 0.147, 0)
+    TeleportFrame.Size = UDim2.new(0.624, 0, 0.853, 0)
+    TeleportFrame.Visible = false
+    TeleportFrame.ZIndex = 2
+    TeleportFrame.ScrollBarThickness = 6
+    TeleportFrame.CanvasSize = UDim2.new(0, 0, 2, 0)
+
+    local layoutFrame = createStyledFrame(TeleportFrame, "TeleportListLayoutFrame", 
+        UDim2.new(1, 0, 2, 0), UDim2.new(0, 0, 0, 0))
+    layoutFrame.BackgroundTransparency = 1
+
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.Name = "ListLayoutTeleport"
+    listLayout.Parent = layoutFrame
+    listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Padding = UDim.new(0, 8)
+
+    -- Islands data with categories and emojis
+    local islandCategories = {
+        {
+            name = "🏝️ MAIN ISLANDS",
+            color = GUIStyles.Colors.Primary,
+            islands = {
+                {name = "🏰 Kohana", value = "Kohana"},
+                {name = "🌋 Crater Island", value = "Crater Island"},
+                {name = "🏖️ Stingray Shore", value = "Stingray Shore"},
+                {name = "🌴 Tropical Grove", value = "Tropical Grove"},
+                {name = "🏔️ Mountain Top", value = "Mountain Top"},
+                {name = "🦈 Shark Bay", value = "Shark Bay"}
+            }
+        },
+        {
+            name = "🌊 FISHING SPOTS",
+            color = GUIStyles.Colors.Secondary,
+            islands = {
+                {name = "🎣 Deep Ocean", value = "Deep Ocean"},
+                {name = "🐟 Shallow Waters", value = "Shallow Waters"},
+                {name = "🦀 Coral Reef", value = "Coral Reef"},
+                {name = "❄️ Frozen Lake", value = "Frozen Lake"},
+                {name = "🔥 Volcanic Waters", value = "Volcanic Waters"},
+                {name = "🕳️ Mysterious Cave", value = "Mysterious Cave"}
+            }
+        },
+        {
+            name = "🏪 SPECIAL LOCATIONS",
+            color = GUIStyles.Colors.Warning,
+            islands = {
+                {name = "🛒 Market Place", value = "Market"},
+                {name = "⚓ Harbor", value = "Harbor"},
+                {name = "🏛️ Temple", value = "Temple"},
+                {name = "🗼 Lighthouse", value = "Lighthouse"},
+                {name = "🏭 Factory", value = "Factory"}
+            }
+        }
+    }
+
+    local teleportButtons = {}
+    
+    for categoryIndex, category in ipairs(islandCategories) do
+        -- Create category header
+        local categoryFrame = createStyledFrame(layoutFrame, category.name .. "Header", 
+            UDim2.new(0.95, 0, 0, 50))
+        categoryFrame.BackgroundColor3 = category.color
+        categoryFrame.BackgroundTransparency = 0.1
+        createBorder(categoryFrame, 2, category.color)
+        
+        local categoryText = Instance.new("TextLabel")
+        categoryText.Parent = categoryFrame
+        categoryText.BackgroundTransparency = 1
+        categoryText.Size = UDim2.new(1, -20, 1, 0)
+        categoryText.Position = UDim2.new(0, 10, 0, 0)
+        categoryText.Font = GUIStyles.Fonts.Title
+        categoryText.Text = category.name
+        categoryText.TextColor3 = GUIStyles.Colors.Text
+        categoryText.TextScaled = true
+        categoryText.TextXAlignment = Enum.TextXAlignment.Left
+        
+        -- Create islands in this category
+        for _, island in ipairs(category.islands) do
+            local islandFrame = createStyledFrame(layoutFrame, island.value .. "Frame", 
+                UDim2.new(0.95, 0, 0, 60))
+            islandFrame.BackgroundColor3 = GUIStyles.Colors.Background
+            islandFrame.BackgroundTransparency = 0.3
+            
+            -- Add hover effect frame
+            local hoverFrame = Instance.new("Frame")
+            hoverFrame.Parent = islandFrame
+            hoverFrame.BackgroundColor3 = category.color
+            hoverFrame.BackgroundTransparency = 1
+            hoverFrame.BorderSizePixel = 0
+            hoverFrame.Size = UDim2.new(1, 0, 1, 0)
+            hoverFrame.ZIndex = islandFrame.ZIndex + 1
+            createUICorner(hoverFrame, GUIStyles.BorderRadius.Medium)
+            
+            -- Island name text
+            local islandText = Instance.new("TextLabel")
+            islandText.Parent = islandFrame
+            islandText.BackgroundTransparency = 1
+            islandText.Position = UDim2.new(0, 15, 0, 0)
+            islandText.Size = UDim2.new(0.7, 0, 1, 0)
+            islandText.Font = GUIStyles.Fonts.Primary
+            islandText.Text = island.name
+            islandText.TextColor3 = GUIStyles.Colors.Text
+            islandText.TextScaled = true
+            islandText.TextXAlignment = Enum.TextXAlignment.Left
+            islandText.ZIndex = islandFrame.ZIndex + 2
+            
+            -- Teleport button
+            local teleportButton = Instance.new("TextButton")
+            teleportButton.Name = island.value .. "Button"
+            teleportButton.Parent = islandFrame
+            teleportButton.BackgroundColor3 = category.color
+            teleportButton.BackgroundTransparency = 0.2
+            teleportButton.BorderSizePixel = 0
+            teleportButton.Position = UDim2.new(0.75, 0, 0.15, 0)
+            teleportButton.Size = UDim2.new(0.2, 0, 0.7, 0)
+            teleportButton.Font = GUIStyles.Fonts.Primary
+            teleportButton.Text = "🚀 TP"
+            teleportButton.TextColor3 = GUIStyles.Colors.Text
+            teleportButton.TextScaled = true
+            teleportButton.ZIndex = islandFrame.ZIndex + 3
+            
+            createUICorner(teleportButton, GUIStyles.BorderRadius.Medium)
+            createBorder(teleportButton, 1, category.color)
+            
+            -- Add hover effects
+            teleportButton.MouseEnter:Connect(function()
+                hoverFrame.BackgroundTransparency = 0.95
+                local TweenService = game:GetService("TweenService")
+                TweenService:Create(teleportButton, TweenInfo.new(0.2), {
+                    BackgroundTransparency = 0.0,
+                    Size = UDim2.new(0.22, 0, 0.8, 0)
+                }):Play()
+                TweenService:Create(islandText, TweenInfo.new(0.2), {
+                    TextColor3 = category.color
+                }):Play()
+            end)
+            
+            teleportButton.MouseLeave:Connect(function()
+                hoverFrame.BackgroundTransparency = 1
+                local TweenService = game:GetService("TweenService")
+                TweenService:Create(teleportButton, TweenInfo.new(0.2), {
+                    BackgroundTransparency = 0.2,
+                    Size = UDim2.new(0.2, 0, 0.7, 0)
+                }):Play()
+                TweenService:Create(islandText, TweenInfo.new(0.2), {
+                    TextColor3 = GUIStyles.Colors.Text
+                }):Play()
+            end)
+            
+            teleportButtons[island.value] = teleportButton
+        end
+    end
+
+    return {
+        frame = TeleportFrame,
+        buttons = teleportButtons
+    }
+end
+
+GUIHandler.createPlayerTeleportPanel = function(parent, playersService)
+    -- Create modern player teleport panel
+    local PlayerTpFrame = Instance.new("ScrollingFrame")
+    PlayerTpFrame.Name = "PlayerTpFrame"
+    PlayerTpFrame.Parent = parent
+    PlayerTpFrame.Active = true
+    PlayerTpFrame.BackgroundTransparency = 1
+    PlayerTpFrame.Position = UDim2.new(0.376, 0, 0.147, 0)
+    PlayerTpFrame.Size = UDim2.new(0.624, 0, 0.853, 0)
+    PlayerTpFrame.Visible = false
+    PlayerTpFrame.ZIndex = 2
+    PlayerTpFrame.ScrollBarThickness = 6
+
+    local layoutFrame = createStyledFrame(PlayerTpFrame, "PlayerTpListLayoutFrame", 
+        UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
+    layoutFrame.BackgroundTransparency = 1
+
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.Name = "ListLayoutPlayerTp"
+    listLayout.Parent = layoutFrame
+    listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Padding = UDim.new(0, 5)
+
+    -- Search box
+    local searchFrame = createStyledFrame(layoutFrame, "SearchFrame", 
+        UDim2.new(0.95, 0, 0, 50))
+    searchFrame.BackgroundColor3 = GUIStyles.Colors.Dark
+    searchFrame.BackgroundTransparency = 0.3
+    
+    local searchIcon = Instance.new("TextLabel")
+    searchIcon.Parent = searchFrame
+    searchIcon.BackgroundTransparency = 1
+    searchIcon.Position = UDim2.new(0, 10, 0, 0)
+    searchIcon.Size = UDim2.new(0, 30, 1, 0)
+    searchIcon.Font = GUIStyles.Fonts.Primary
+    searchIcon.Text = "🔍"
+    searchIcon.TextColor3 = GUIStyles.Colors.TextSecondary
+    searchIcon.TextScaled = true
+    
+    local searchBox = Instance.new("TextBox")
+    searchBox.Name = "PlayerSearchBox"
+    searchBox.Parent = searchFrame
+    searchBox.BackgroundTransparency = 1
+    searchBox.Position = UDim2.new(0, 45, 0, 5)
+    searchBox.Size = UDim2.new(1, -50, 1, -10)
+    searchBox.Font = GUIStyles.Fonts.Body
+    searchBox.PlaceholderText = "Search players..."
+    searchBox.Text = ""
+    searchBox.TextColor3 = GUIStyles.Colors.Text
+    searchBox.TextScaled = true
+    searchBox.TextXAlignment = Enum.TextXAlignment.Left
+
+    local playerButtons = {}
+    
+    -- Function to refresh player list
+    local function refreshPlayerList()
+        -- Clear existing player buttons
+        for _, button in pairs(playerButtons) do
+            if button.Parent then
+                button.Parent:Destroy()
+            end
+        end
+        playerButtons = {}
+        
+        -- Get current players
+        local players = playersService:GetPlayers()
+        local searchTerm = searchBox.Text:lower()
+        
+        for _, player in ipairs(players) do
+            -- Skip local player and filter by search
+            if player ~= playersService.LocalPlayer then
+                if searchTerm == "" or player.Name:lower():find(searchTerm) or 
+                   player.DisplayName:lower():find(searchTerm) then
+                    
+                    local playerFrame = createStyledFrame(layoutFrame, player.Name .. "Frame", 
+                        UDim2.new(0.95, 0, 0, 55))
+                    playerFrame.BackgroundColor3 = GUIStyles.Colors.Background
+                    playerFrame.BackgroundTransparency = 0.4
+                    
+                    -- Player avatar (placeholder)
+                    local avatarFrame = Instance.new("Frame")
+                    avatarFrame.Parent = playerFrame
+                    avatarFrame.BackgroundColor3 = GUIStyles.Colors.Primary
+                    avatarFrame.BorderSizePixel = 0
+                    avatarFrame.Position = UDim2.new(0, 10, 0.1, 0)
+                    avatarFrame.Size = UDim2.new(0, 40, 0.8, 0)
+                    createUICorner(avatarFrame, GUIStyles.BorderRadius.Large)
+                    
+                    local avatarText = Instance.new("TextLabel")
+                    avatarText.Parent = avatarFrame
+                    avatarText.BackgroundTransparency = 1
+                    avatarText.Size = UDim2.new(1, 0, 1, 0)
+                    avatarText.Font = GUIStyles.Fonts.Title
+                    avatarText.Text = player.Name:sub(1, 1):upper()
+                    avatarText.TextColor3 = GUIStyles.Colors.Text
+                    avatarText.TextScaled = true
+                    
+                    -- Player info
+                    local playerName = Instance.new("TextLabel")
+                    playerName.Parent = playerFrame
+                    playerName.BackgroundTransparency = 1
+                    playerName.Position = UDim2.new(0, 60, 0, 0)
+                    playerName.Size = UDim2.new(0.5, 0, 0.6, 0)
+                    playerName.Font = GUIStyles.Fonts.Primary
+                    playerName.Text = player.DisplayName
+                    playerName.TextColor3 = GUIStyles.Colors.Text
+                    playerName.TextScaled = true
+                    playerName.TextXAlignment = Enum.TextXAlignment.Left
+                    
+                    local playerUsername = Instance.new("TextLabel")
+                    playerUsername.Parent = playerFrame
+                    playerUsername.BackgroundTransparency = 1
+                    playerUsername.Position = UDim2.new(0, 60, 0.6, 0)
+                    playerUsername.Size = UDim2.new(0.5, 0, 0.4, 0)
+                    playerUsername.Font = GUIStyles.Fonts.Body
+                    playerUsername.Text = "@" .. player.Name
+                    playerUsername.TextColor3 = GUIStyles.Colors.TextSecondary
+                    playerUsername.TextScaled = true
+                    playerUsername.TextXAlignment = Enum.TextXAlignment.Left
+                    
+                    -- Teleport button
+                    local tpButton = Instance.new("TextButton")
+                    tpButton.Name = player.Name .. "TpButton"
+                    tpButton.Parent = playerFrame
+                    tpButton.BackgroundColor3 = GUIStyles.Colors.Success
+                    tpButton.BackgroundTransparency = 0.2
+                    tpButton.BorderSizePixel = 0
+                    tpButton.Position = UDim2.new(0.75, 0, 0.15, 0)
+                    tpButton.Size = UDim2.new(0.2, 0, 0.7, 0)
+                    tpButton.Font = GUIStyles.Fonts.Primary
+                    tpButton.Text = "🚀"
+                    tpButton.TextColor3 = GUIStyles.Colors.Text
+                    tpButton.TextScaled = true
+                    
+                    createUICorner(tpButton, GUIStyles.BorderRadius.Medium)
+                    
+                    -- Add hover effect
+                    tpButton.MouseEnter:Connect(function()
+                        local TweenService = game:GetService("TweenService")
+                        TweenService:Create(tpButton, TweenInfo.new(0.2), {
+                            BackgroundTransparency = 0.0,
+                            Size = UDim2.new(0.22, 0, 0.8, 0)
+                        }):Play()
+                    end)
+                    
+                    tpButton.MouseLeave:Connect(function()
+                        local TweenService = game:GetService("TweenService")
+                        TweenService:Create(tpButton, TweenInfo.new(0.2), {
+                            BackgroundTransparency = 0.2,
+                            Size = UDim2.new(0.2, 0, 0.7, 0)
+                        }):Play()
+                    end)
+                    
+                    playerButtons[player.Name] = tpButton
+                end
+            end
+        end
+        
+        -- Update canvas size
+        PlayerTpFrame.CanvasSize = UDim2.new(0, 0, 0, #playerButtons * 65 + 100)
+    end
+    
+    -- Connect search functionality
+    searchBox:GetPropertyChangedSignal("Text"):Connect(refreshPlayerList)
+    
+    -- Initial refresh
+    refreshPlayerList()
+    
+    -- Auto-refresh every 5 seconds
+    task.spawn(function()
+        while PlayerTpFrame.Parent do
+            task.wait(5)
+            if PlayerTpFrame.Visible then
+                refreshPlayerList()
+            end
+        end
+    end)
+
+    return {
+        frame = PlayerTpFrame,
+        buttons = playerButtons,
+        searchBox = searchBox,
+        refreshList = refreshPlayerList
+    }
+end
+
+GUIHandler.createQuickTeleportBar = function(parent)
+    -- Create quick access teleport bar at bottom
+    local quickTpBar = createStyledFrame(parent, "QuickTeleportBar", 
+        UDim2.new(0.9, 0, 0, 60), UDim2.new(0.05, 0, 0.9, 0))
+    quickTpBar.BackgroundColor3 = GUIStyles.Colors.Dark
+    quickTpBar.BackgroundTransparency = 0.1
+    createBorder(quickTpBar, 2, GUIStyles.Colors.Primary)
+    
+    local quickLayout = Instance.new("UIListLayout")
+    quickLayout.Parent = quickTpBar
+    quickLayout.FillDirection = Enum.FillDirection.Horizontal
+    quickLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    quickLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    quickLayout.Padding = UDim.new(0, 10)
+    
+    local quickPadding = Instance.new("UIPadding")
+    quickPadding.Parent = quickTpBar
+    quickPadding.PaddingLeft = UDim.new(0, 10)
+    quickPadding.PaddingRight = UDim.new(0, 10)
+    quickPadding.PaddingTop = UDim.new(0, 8)
+    quickPadding.PaddingBottom = UDim.new(0, 8)
+    
+    -- Quick teleport destinations
+    local quickDestinations = {
+        {name = "🏰", text = "Kohana", value = "Kohana", color = GUIStyles.Colors.Primary},
+        {name = "🌋", text = "Crater", value = "Crater Island", color = GUIStyles.Colors.Warning},
+        {name = "🏖️", text = "Shore", value = "Stingray Shore", color = GUIStyles.Colors.Info},
+        {name = "🎣", text = "Deep", value = "Deep Ocean", color = GUIStyles.Colors.Secondary},
+        {name = "🛒", text = "Market", value = "Market", color = GUIStyles.Colors.Success}
+    }
+    
+    local quickButtons = {}
+    
+    for _, dest in ipairs(quickDestinations) do
+        local quickButton = Instance.new("TextButton")
+        quickButton.Name = "Quick" .. dest.value
+        quickButton.Parent = quickTpBar
+        quickButton.BackgroundColor3 = dest.color
+        quickButton.BackgroundTransparency = 0.3
+        quickButton.BorderSizePixel = 0
+        quickButton.Size = UDim2.new(0, 80, 1, 0)
+        quickButton.Font = GUIStyles.Fonts.Body
+        quickButton.Text = dest.name .. "\n" .. dest.text
+        quickButton.TextColor3 = GUIStyles.Colors.Text
+        quickButton.TextScaled = true
+        
+        createUICorner(quickButton, GUIStyles.BorderRadius.Medium)
+        createBorder(quickButton, 1, dest.color)
+        
+        -- Add glow effect
+        local glowFrame = Instance.new("Frame")
+        glowFrame.Parent = quickButton
+        glowFrame.BackgroundColor3 = dest.color
+        glowFrame.BackgroundTransparency = 1
+        glowFrame.BorderSizePixel = 0
+        glowFrame.Position = UDim2.new(0, -2, 0, -2)
+        glowFrame.Size = UDim2.new(1, 4, 1, 4)
+        glowFrame.ZIndex = quickButton.ZIndex - 1
+        createUICorner(glowFrame, GUIStyles.BorderRadius.Medium)
+        
+        -- Hover effects
+        quickButton.MouseEnter:Connect(function()
+            local TweenService = game:GetService("TweenService")
+            TweenService:Create(quickButton, TweenInfo.new(0.2), {
+                BackgroundTransparency = 0.1,
+                Size = UDim2.new(0, 85, 1.1, 0)
+            }):Play()
+            TweenService:Create(glowFrame, TweenInfo.new(0.2), {
+                BackgroundTransparency = 0.7
+            }):Play()
+        end)
+        
+        quickButton.MouseLeave:Connect(function()
+            local TweenService = game:GetService("TweenService")
+            TweenService:Create(quickButton, TweenInfo.new(0.2), {
+                BackgroundTransparency = 0.3,
+                Size = UDim2.new(0, 80, 1, 0)
+            }):Play()
+            TweenService:Create(glowFrame, TweenInfo.new(0.2), {
+                BackgroundTransparency = 1
+            }):Play()
+        end)
+        
+        quickButtons[dest.value] = quickButton
+    end
+    
+    return {
+        frame = quickTpBar,
+        buttons = quickButtons
+    }
+end
+
 -- ===================================================================
 --                         MAIN GUI CREATOR
 -- ===================================================================
