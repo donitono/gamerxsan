@@ -888,13 +888,21 @@ local function createNotification(text, color)
         "Out", "Quad", 0.3, true
     )
     
-    -- Remove after 3 seconds
-    task.wait(3)
-    notification:TweenPosition(
-        UDim2.new(1, 10, 0, 50),
-        "In", "Quad", 0.3, true,
-        function() notification:Destroy() end
-    )
+    -- Remove after 3 seconds using task.spawn to avoid blocking
+    task.spawn(function()
+        task.wait(3)
+        if notification and notification.Parent then
+            notification:TweenPosition(
+                UDim2.new(1, 10, 0, 50),
+                "In", "Quad", 0.3, true,
+                function() 
+                    if notification then
+                        notification:Destroy() 
+                    end
+                end
+            )
+        end
+    end)
 end
 
 -- ===================================================================
@@ -2295,23 +2303,78 @@ local function createCompleteGUI()
     local showGUIPanel = GUIHandler.createPanelSwitcher(guiComponents, callbacks)
     
     -- Fix floating button parent (should be attached to main GUI)
-    guiComponents.floating.button.Parent = ZayrosFISHIT
-    guiComponents.floating.shadow.Parent = ZayrosFISHIT
-    guiComponents.floating.tooltip.Parent = ZayrosFISHIT
+    if guiComponents.floating and guiComponents.floating.button then
+        guiComponents.floating.button.Parent = ZayrosFISHIT
+        if guiComponents.floating.shadow1 then
+            guiComponents.floating.shadow1.Parent = ZayrosFISHIT
+        end
+        if guiComponents.floating.shadow2 then
+            guiComponents.floating.shadow2.Parent = ZayrosFISHIT
+        end
+        if guiComponents.floating.tooltip then
+            guiComponents.floating.tooltip.Parent = ZayrosFISHIT
+        end
+        if guiComponents.floating.tooltipShadow then
+            guiComponents.floating.tooltipShadow.Parent = ZayrosFISHIT
+        end
+    end
     
-    -- Initialize UI state
-    GUIHandler.updateToggleButton(guiComponents.security.adminButton, guiComponents.security.adminIndicator, SecuritySettings.AdminDetection)
-    GUIHandler.updateToggleButton(guiComponents.security.proximityButton, guiComponents.security.proximityIndicator, SecuritySettings.PlayerProximityAlert)
-    GUIHandler.updateToggleButton(guiComponents.security.autoHideButton, guiComponents.security.autoHideIndicator, SecuritySettings.AutoHideOnAdmin)
-    GUIHandler.updateToggleButton(guiComponents.advanced.luckButton, guiComponents.advanced.luckIndicator, Settings.LuckBoost or false)
-    GUIHandler.updateToggleButton(guiComponents.advanced.weatherButton, guiComponents.advanced.weatherIndicator, Settings.WeatherBoost or false)
-    GUIHandler.updateToggleButton(guiComponents.advanced.smartButton, guiComponents.advanced.smartIndicator, Settings.SmartFishing or false)
+    -- Initialize UI state with new structure
+    pcall(function()
+        if guiComponents.security then
+            GUIHandler.updateToggleButton(
+                guiComponents.security.adminButton, 
+                guiComponents.security.adminToggleBg, 
+                SecuritySettings.AdminDetection,
+                guiComponents.security.adminIndicator,
+                guiComponents.security.adminStatusText
+            )
+            GUIHandler.updateToggleButton(
+                guiComponents.security.proximityButton, 
+                guiComponents.security.proximityToggleBg, 
+                SecuritySettings.PlayerProximityAlert,
+                guiComponents.security.proximityIndicator,
+                guiComponents.security.proximityStatusText
+            )
+            GUIHandler.updateToggleButton(
+                guiComponents.security.autoHideButton, 
+                guiComponents.security.autoHideToggleBg, 
+                SecuritySettings.AutoHideOnAdmin,
+                guiComponents.security.autoHideIndicator,
+                guiComponents.security.autoHideStatusText
+            )
+        end
+        
+        if guiComponents.advanced then
+            GUIHandler.updateToggleButton(
+                guiComponents.advanced.luckButton, 
+                guiComponents.advanced.luckToggleBg, 
+                Settings.LuckBoost or false,
+                guiComponents.advanced.luckIndicator,
+                guiComponents.advanced.luckStatusText
+            )
+            GUIHandler.updateToggleButton(
+                guiComponents.advanced.weatherButton, 
+                guiComponents.advanced.weatherToggleBg, 
+                Settings.WeatherBoost or false,
+                guiComponents.advanced.weatherIndicator,
+                guiComponents.advanced.weatherStatusText
+            )
+            GUIHandler.updateToggleButton(
+                guiComponents.advanced.smartButton, 
+                guiComponents.advanced.smartToggleBg, 
+                Settings.SmartFishing or false,
+                guiComponents.advanced.smartIndicator,
+                guiComponents.advanced.smartStatusText
+            )
+        end
+    end)
     
     -- Debug: Print that GUI Handler is loaded and working
     createNotification("🔧 GUI Handler loaded! Buttons should work now.", Color3.fromRGB(0, 255, 255))
     
     -- Final setup notification
-    wait(1)
+    task.wait(1)
     createNotification("🎉 All systems ready! Try clicking Security/Advanced panels.", Color3.fromRGB(0, 255, 0))
 
     -- Page switching function
