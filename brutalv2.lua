@@ -1837,6 +1837,19 @@ local function createCompleteGUI()
     -- Create GUI using the handler module
     local guiComponents = GUIHandler.createCompleteGUI(FrameUtama, SecuritySettings, Settings)
     
+    -- Create boat panel using GUI Handler
+    local boatComponents = {}
+    local success, errorMsg = pcall(function()
+        boatComponents = GUIHandler.createBoatPanel(SpawnBoatFrame)
+    end)
+    
+    if not success then
+        createNotification("❌ Boat Panel Error: " .. tostring(errorMsg), Color3.fromRGB(255, 0, 0))
+        print("Boat Panel Error:", errorMsg)
+    else
+        createNotification("✅ Boat Panel created successfully!", Color3.fromRGB(0, 255, 0))
+    end
+    
     -- Get references to GUI elements
     local SecurityFrame = guiComponents.security.frame
     local AdvancedFrame = guiComponents.advanced.frame
@@ -2216,12 +2229,16 @@ local function createCompleteGUI()
     end)
 
     -- Despawn boat button
-    connections[#connections + 1] = DespawnBoatButton.MouseButton1Click:Connect(function()
-        safeCall(function()
-            despawnBoat:InvokeServer()
-            createNotification("🗑️ Boat despawned!", Color3.fromRGB(255, 165, 0))
+    if boatComponents.despawnButton then
+        connections[#connections + 1] = boatComponents.despawnButton.MouseButton1Click:Connect(function()
+            safeCall(function()
+                despawnBoat:InvokeServer()
+                createNotification("🗑️ Boat despawned!", Color3.fromRGB(255, 165, 0))
+            end)
         end)
-    end)
+    else
+        createNotification("❌ Despawn button not found!", Color3.fromRGB(255, 0, 0))
+    end
 
     -- Setup GUI Event Handlers using GUI Handler module
     local callbacks = {
@@ -2235,7 +2252,44 @@ local function createCompleteGUI()
     }
     
     -- Setup all event handlers using the GUI Handler
-    connections = GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings, connections, callbacks)
+    local setupSuccess, setupError = pcall(function()
+        connections = GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings, connections, callbacks)
+    end)
+    
+    if setupSuccess then
+        createNotification("✅ GUI Handler setup complete!", Color3.fromRGB(0, 255, 0))
+    else
+        createNotification("❌ GUI Handler Error: " .. tostring(setupError), Color3.fromRGB(255, 0, 0))
+        print("GUI Handler Setup Error:", setupError)
+    end
+    
+    -- Setup boat button connections
+    local boats = {
+        {name = "SmallDinghy", remoteArg = "SmallDinghy"},
+        {name = "Kayak", remoteArg = "Kayak"},
+        {name = "JetSki", remoteArg = "JetSki"},
+        {name = "HighFieldBoat", remoteArg = "HighFieldBoat"},
+        {name = "SpeedBoat", remoteArg = "SpeedBoat"},
+        {name = "FishingBoat", remoteArg = "FishingBoat"},
+        {name = "MiniYacht", remoteArg = "MiniYacht"},
+        {name = "HyperBoat", remoteArg = "HyperBoat"},
+        {name = "FrozenBoat", remoteArg = "FrozenBoat"},
+        {name = "CruiserBoat", remoteArg = "CruiserBoat"}
+    }
+    
+    for _, boat in ipairs(boats) do
+        if boatComponents and boatComponents[boat.name] then
+            connections[#connections + 1] = boatComponents[boat.name].MouseButton1Click:Connect(function()
+                safeCall(function()
+                    spawnBoat:InvokeServer(boat.remoteArg)
+                    createNotification("🚤 " .. boat.name .. " spawned!", Color3.fromRGB(0, 255, 255))
+                end)
+            end)
+            print("✅ " .. boat.name .. " button connected")
+        else
+            print("❌ " .. boat.name .. " button not found")
+        end
+    end
     
     -- Setup panel switcher from GUI Handler
     local showGUIPanel = GUIHandler.createPanelSwitcher(guiComponents, callbacks)
@@ -2255,6 +2309,10 @@ local function createCompleteGUI()
     
     -- Debug: Print that GUI Handler is loaded and working
     createNotification("🔧 GUI Handler loaded! Buttons should work now.", Color3.fromRGB(0, 255, 255))
+    
+    -- Final setup notification
+    wait(1)
+    createNotification("🎉 All systems ready! Try clicking Security/Advanced panels.", Color3.fromRGB(0, 255, 0))
 
     -- Page switching function
     local function showPanel(pageName)
