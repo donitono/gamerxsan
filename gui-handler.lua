@@ -1,6 +1,15 @@
 -- ===================================================================
 --                        GUI HANDLER MODULE
 --                    Zayros FISH-IT V2.0 GUI System
+--                       ✨ MODERN TOGGLE EDITION ✨
+--
+-- 🎨 Features:
+-- • Ultra-modern toggle switches (iPhone 15 Pro style)
+-- • Glass morphism effects with enhanced shadows
+-- • Colorful icon system with dynamic glow effects
+-- • Smooth spring animations with haptic feedback
+-- • Premium dark theme with enhanced contrast
+-- • Status indicators with pulse animations
 -- ===================================================================
 
 local GUIHandler = {}
@@ -349,103 +358,231 @@ local function createStyledFrame(parent, name, size, position, backgroundColor)
     return frame
 end
 
-local function createToggleSystem(parent, labelText, settingValue)
-    -- Create main container with iOS-style design
+local function createToggleSystem(parent, labelText, settingValue, iconData)
+    -- Create modern card container with glass morphism
     local container = Instance.new("Frame")
     container.Parent = parent
-    container.BackgroundColor3 = GUIStyles.Colors.Dark
-    container.BackgroundTransparency = 0.1
+    container.BackgroundColor3 = GUIStyles.Colors.Surface
+    container.BackgroundTransparency = 0.03
     container.BorderSizePixel = 0
     container.Size = UDim2.new(1, 0, 1, 0)
-    createUICorner(container, GUIStyles.BorderRadius.Row)
+    createUICorner(container, GUIStyles.BorderRadius.Large)
     
-    -- Icon frame on the left (like in the image)
-    local iconFrame = Instance.new("Frame")
-    iconFrame.Parent = container
-    iconFrame.BackgroundColor3 = GUIStyles.Colors.Primary
-    iconFrame.BorderSizePixel = 0
-    iconFrame.Position = UDim2.new(0, 16, 0.5, -12)
-    iconFrame.Size = UDim2.new(0, 24, 0, 24)
-    createUICorner(iconFrame, UDim.new(0, 6))
+    -- Add glass morphism effect
+    createGlassMorphism(container, 0.08, 12)
+    
+    -- Add subtle border and shadow
+    createBorder(container, 1, GUIStyles.Colors.BorderLight)
+    createEnhancedShadow(parent, container, "ShadowLow")
+    
+    -- Modern colored icon container on the left
+    local iconContainer = Instance.new("Frame")
+    iconContainer.Parent = container
+    iconContainer.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
+    iconContainer.BackgroundTransparency = 0.15
+    iconContainer.BorderSizePixel = 0
+    iconContainer.Position = UDim2.new(0, 20, 0.5, -18)
+    iconContainer.Size = UDim2.new(0, 36, 0, 36)
+    createUICorner(iconContainer, GUIStyles.BorderRadius.Medium)
+    
+    -- Add subtle glow to icon container
+    local iconGlow = Instance.new("Frame")
+    iconGlow.Parent = container
+    iconGlow.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
+    iconGlow.BackgroundTransparency = 0.85
+    iconGlow.BorderSizePixel = 0
+    iconGlow.Position = UDim2.new(0, 18, 0.5, -20)
+    iconGlow.Size = UDim2.new(0, 40, 0, 40)
+    iconGlow.ZIndex = iconContainer.ZIndex - 1
+    createUICorner(iconGlow, GUIStyles.BorderRadius.Large)
     
     -- Icon text
     local iconText = Instance.new("TextLabel")
-    iconText.Parent = iconFrame
+    iconText.Parent = iconContainer
     iconText.BackgroundTransparency = 1
-    iconText.Size = UDim2.new(1, 0, 1, 0)
+    iconText.Size = UDim2.new(0.7, 0, 0.7, 0)
+    iconText.Position = UDim2.new(0.15, 0, 0.15, 0)
     iconText.Font = GUIStyles.Fonts.Icon
-    iconText.Text = "⚙️"
+    iconText.Text = (iconData and iconData.text) or "⚙️"
     iconText.TextColor3 = GUIStyles.Colors.Text
     iconText.TextScaled = true
+    iconText.ZIndex = iconContainer.ZIndex + 1
     
-    -- Create label with iOS-style typography
+    -- Modern typography for label
     local label = Instance.new("TextLabel")
     label.Parent = container
     label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 56, 0, 0)  -- After icon + padding
-    label.Size = UDim2.new(1, -140, 1, 0)    -- Leave space for toggle
+    label.Position = UDim2.new(0, 72, 0, 8)
+    label.Size = UDim2.new(1, -200, 0, 20)
     label.Font = GUIStyles.Fonts.Primary
     label.Text = labelText
     label.TextColor3 = GUIStyles.Colors.Text
-    label.TextSize = 17  -- iOS standard text size
+    label.TextSize = 16
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
     
-    -- Create modern iOS-style toggle switch
-    local toggleBg = Instance.new("Frame")
-    toggleBg.Parent = container
-    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.ToggleOn or GUIStyles.Colors.ToggleOff
-    toggleBg.BorderSizePixel = 0
-    toggleBg.Position = UDim2.new(1, -68, 0.5, -16)  -- 52px width + 16px padding
-    toggleBg.Size = UDim2.new(0, 52, 0, 32)  -- iOS toggle dimensions
-    createUICorner(toggleBg, GUIStyles.BorderRadius.Toggle)
+    -- Subtitle/description (optional)
+    local subtitle = Instance.new("TextLabel")
+    subtitle.Parent = container
+    subtitle.BackgroundTransparency = 1
+    subtitle.Position = UDim2.new(0, 72, 0, 28)
+    subtitle.Size = UDim2.new(1, -200, 0, 16)
+    subtitle.Font = GUIStyles.Fonts.Caption
+    subtitle.Text = settingValue and "Enabled" or "Disabled"
+    subtitle.TextColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary
+    subtitle.TextSize = 12
+    subtitle.TextXAlignment = Enum.TextXAlignment.Left
+    subtitle.TextYAlignment = Enum.TextYAlignment.Center
     
-    -- Toggle circle/thumb (the white circle)
+    -- Ultra-modern toggle switch (iPhone 15 Pro style)
+    local toggleContainer = Instance.new("Frame")
+    toggleContainer.Parent = container
+    toggleContainer.BackgroundTransparency = 1
+    toggleContainer.Position = UDim2.new(1, -80, 0.5, -20)
+    toggleContainer.Size = UDim2.new(0, 60, 0, 40)
+    
+    local toggleBg = Instance.new("Frame")
+    toggleBg.Name = labelText .. "ToggleBg"
+    toggleBg.Parent = toggleContainer
+    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.ToggleOff
+    toggleBg.BackgroundTransparency = 0.05
+    toggleBg.BorderSizePixel = 0
+    toggleBg.Position = UDim2.new(0.5, -26, 0.5, -15)
+    toggleBg.Size = UDim2.new(0, 52, 0, 30)
+    toggleBg.ZIndex = 2
+    
+    createUICorner(toggleBg, UDim.new(0, 15))  -- Perfect rounded ends
+    
+    -- Add inner shadow to toggle track
+    local toggleShadow = Instance.new("Frame")
+    toggleShadow.Parent = toggleBg
+    toggleShadow.BackgroundColor3 = GUIStyles.Colors.Black
+    toggleShadow.BackgroundTransparency = 0.95
+    toggleShadow.BorderSizePixel = 0
+    toggleShadow.Position = UDim2.new(0, 1, 0, 1)
+    toggleShadow.Size = UDim2.new(1, -2, 1, -2)
+    toggleShadow.ZIndex = toggleBg.ZIndex + 1
+    createUICorner(toggleShadow, UDim.new(0, 14))
+    
+    -- Modern toggle indicator with enhanced design
     local indicator = Instance.new("Frame")
+    indicator.Name = labelText .. "Indicator"
     indicator.Parent = toggleBg
     indicator.BackgroundColor3 = GUIStyles.Colors.Text
     indicator.BorderSizePixel = 0
-    indicator.Position = settingValue and UDim2.new(1, -30, 0, 2) or UDim2.new(0, 2, 0, 2)
-    indicator.Size = UDim2.new(0, 28, 0, 28)  -- Circle size
-    createUICorner(indicator, UDim.new(0, 14))  -- Perfect circle
+    indicator.Position = settingValue and UDim2.new(1, -28, 0.5, -13) or UDim2.new(0, 2, 0.5, -13)
+    indicator.Size = UDim2.new(0, 26, 0, 26)
+    indicator.ZIndex = toggleBg.ZIndex + 2
     
-    -- Create invisible button for clicking
+    createUICorner(indicator, UDim.new(0, 13))  -- Perfect circle
+    
+    -- Add enhanced shadow to indicator
+    local indicatorShadow = Instance.new("Frame")
+    indicatorShadow.Parent = toggleBg
+    indicatorShadow.BackgroundColor3 = GUIStyles.Colors.Black
+    indicatorShadow.BackgroundTransparency = 0.75
+    indicatorShadow.BorderSizePixel = 0
+    indicatorShadow.Position = indicator.Position + UDim2.new(0, 1, 0, 2)
+    indicatorShadow.Size = UDim2.new(0, 26, 0, 26)
+    indicatorShadow.ZIndex = indicator.ZIndex - 1
+    createUICorner(indicatorShadow, UDim.new(0, 13))
+    
+    -- Add subtle inner highlight to indicator
+    local indicatorHighlight = Instance.new("Frame")
+    indicatorHighlight.Parent = indicator
+    indicatorHighlight.BackgroundColor3 = GUIStyles.Colors.Text
+    indicatorHighlight.BackgroundTransparency = 0.1
+    indicatorHighlight.BorderSizePixel = 0
+    indicatorHighlight.Position = UDim2.new(0, 2, 0, 2)
+    indicatorHighlight.Size = UDim2.new(1, -4, 0.4, 0)
+    indicatorHighlight.ZIndex = indicator.ZIndex + 1
+    createUICorner(indicatorHighlight, UDim.new(0, 11))
+    
+    -- Status indicator dot (active state)
+    local statusDot = Instance.new("Frame")
+    statusDot.Name = "StatusDot"
+    statusDot.Parent = iconContainer
+    statusDot.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary
+    statusDot.BackgroundTransparency = settingValue and 0.2 or 0.8
+    statusDot.BorderSizePixel = 0
+    statusDot.Position = UDim2.new(1, -8, 0, 2)
+    statusDot.Size = UDim2.new(0, 8, 0, 8)
+    statusDot.ZIndex = iconContainer.ZIndex + 2
+    createUICorner(statusDot, UDim.new(0, 4))
+    
+    -- Invisible button for interaction with better hit area
     local button = Instance.new("TextButton")
     button.Parent = container
     button.BackgroundTransparency = 1
     button.Size = UDim2.new(1, 0, 1, 0)
     button.Text = ""
-    button.ZIndex = 2
+    button.ZIndex = 10
     
-    -- Status text (ON/OFF) - optional, can be hidden for cleaner look like image
-    local statusText = Instance.new("TextLabel")
-    statusText.Parent = container
-    statusText.BackgroundTransparency = 1
-    statusText.Position = UDim2.new(1, -68, 0.7, 0)
-    statusText.Size = UDim2.new(0, 52, 0, 15)
-    statusText.Font = GUIStyles.Fonts.Body
-    statusText.Text = ""  -- Hidden for clean look like image
-    statusText.TextColor3 = settingValue and GUIStyles.Colors.ToggleOn or GUIStyles.Colors.TextSecondary
-    statusText.TextSize = 12
-    statusText.TextXAlignment = Enum.TextXAlignment.Center
-    statusText.Visible = false  -- Hide for cleaner design
+    -- Enhanced hover effects with modern animations
+    local TweenService = game:GetService("TweenService")
+    local hoverTweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     
-    -- Add hover effect for the entire row
     button.MouseEnter:Connect(function()
-        local TweenService = game:GetService("TweenService")
-        TweenService:Create(container, TweenInfo.new(0.15), {
-            BackgroundTransparency = 0.05
+        -- Container hover effect
+        TweenService:Create(container, hoverTweenInfo, {
+            BackgroundTransparency = 0.01,
+            Size = UDim2.new(1, 2, 1, 2)
+        }):Play()
+        
+        -- Icon glow effect
+        TweenService:Create(iconGlow, hoverTweenInfo, {
+            BackgroundTransparency = 0.75,
+            Size = UDim2.new(0, 44, 0, 44),
+            Position = UDim2.new(0, 16, 0.5, -22)
+        }):Play()
+        
+        -- Icon scale
+        TweenService:Create(iconContainer, hoverTweenInfo, {
+            Size = UDim2.new(0, 38, 0, 38),
+            Position = UDim2.new(0, 19, 0.5, -19)
+        }):Play()
+        
+        -- Label color enhancement
+        TweenService:Create(label, hoverTweenInfo, {
+            TextColor3 = (iconData and iconData.accent) or GUIStyles.Colors.Primary
+        }):Play()
+        
+        -- Toggle hover effect
+        TweenService:Create(toggleBg, hoverTweenInfo, {
+            Size = UDim2.new(0, 54, 0, 32),
+            Position = UDim2.new(0.5, -27, 0.5, -16)
         }):Play()
     end)
     
     button.MouseLeave:Connect(function()
-        local TweenService = game:GetService("TweenService")
-        TweenService:Create(container, TweenInfo.new(0.15), {
-            BackgroundTransparency = 0.1
+        -- Return to normal state
+        TweenService:Create(container, hoverTweenInfo, {
+            BackgroundTransparency = 0.03,
+            Size = UDim2.new(1, 0, 1, 0)
+        }):Play()
+        
+        TweenService:Create(iconGlow, hoverTweenInfo, {
+            BackgroundTransparency = 0.85,
+            Size = UDim2.new(0, 40, 0, 40),
+            Position = UDim2.new(0, 18, 0.5, -20)
+        }):Play()
+        
+        TweenService:Create(iconContainer, hoverTweenInfo, {
+            Size = UDim2.new(0, 36, 0, 36),
+            Position = UDim2.new(0, 20, 0.5, -18)
+        }):Play()
+        
+        TweenService:Create(label, hoverTweenInfo, {
+            TextColor3 = GUIStyles.Colors.Text
+        }):Play()
+        
+        TweenService:Create(toggleBg, hoverTweenInfo, {
+            Size = UDim2.new(0, 52, 0, 30),
+            Position = UDim2.new(0.5, -26, 0.5, -15)
         }):Play()
     end)
     
-    return button, toggleBg, label, indicator, statusText
+    return button, toggleBg, label, indicator, subtitle, iconContainer, statusDot, indicatorShadow
 end
 
 -- ===================================================================
@@ -489,29 +626,32 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     layoutPadding.PaddingRight = UDim.new(0, 16)
     layoutPadding.PaddingBottom = UDim.new(0, 16)
 
-    -- Auto Fish Row (matching image)
+    -- Auto Fish Row with modern design and colored icon
     local adminFrame = createStyledFrame(layoutFrame, "AdminDetectionFrame", 
         UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
     adminFrame.BackgroundTransparency = 1
-    local adminButton, adminToggleBg, adminLabel, adminIndicator, adminStatusText = createToggleSystem(adminFrame, "Auto Fish", SecuritySettings.AdminDetection)
+    local adminButton, adminToggleBg, adminLabel, adminIndicator, adminSubtitle, adminIconContainer, adminStatusDot, adminIndicatorShadow = 
+        createToggleSystem(adminFrame, "Auto Fish", SecuritySettings.AdminDetection, GUIStyles.Icons.AutoFish)
     adminButton.Name = "AdminDetectionButton"
     adminToggleBg.Name = "AdminDetectionToggleBg"
     adminIndicator.Name = "AdminDetectionIndicator"
 
-    -- Reset Fish Row (matching image)
+    -- Reset Fish Row with modern design and colored icon
     local proximityFrame = createStyledFrame(layoutFrame, "ProximityAlertFrame", 
         UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
     proximityFrame.BackgroundTransparency = 1
-    local proximityButton, proximityToggleBg, proximityLabel, proximityIndicator, proximityStatusText = createToggleSystem(proximityFrame, "Reset Fish", SecuritySettings.PlayerProximityAlert)
+    local proximityButton, proximityToggleBg, proximityLabel, proximityIndicator, proximitySubtitle, proximityIconContainer, proximityStatusDot, proximityIndicatorShadow = 
+        createToggleSystem(proximityFrame, "Reset Fish", SecuritySettings.PlayerProximityAlert, GUIStyles.Icons.Reset)
     proximityButton.Name = "ProximityAlertButton"
     proximityToggleBg.Name = "ProximityAlertToggleBg"
     proximityIndicator.Name = "ProximityAlertIndicator"
 
-    -- Sell All Fishes Anywhere Row (matching image)
+    -- Sell All Fishes Anywhere Row with modern design and colored icon
     local autoHideFrame = createStyledFrame(layoutFrame, "AutoHideFrame", 
         UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
     autoHideFrame.BackgroundTransparency = 1
-    local autoHideButton, autoHideToggleBg, autoHideLabel, autoHideIndicator, autoHideStatusText = createToggleSystem(autoHideFrame, "Sell All Fishes Anywhere", SecuritySettings.AutoHideOnAdmin)
+    local autoHideButton, autoHideToggleBg, autoHideLabel, autoHideIndicator, autoHideSubtitle, autoHideIconContainer, autoHideStatusDot, autoHideIndicatorShadow = 
+        createToggleSystem(autoHideFrame, "Sell All Fishes Anywhere", SecuritySettings.AutoHideOnAdmin, GUIStyles.Icons.Sell)
     autoHideButton.Name = "AutoHideButton"
     autoHideToggleBg.Name = "AutoHideToggleBg"
     autoHideIndicator.Name = "AutoHideIndicator"
@@ -537,15 +677,24 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
         adminButton = adminButton,
         adminToggleBg = adminToggleBg,
         adminIndicator = adminIndicator,
-        adminStatusText = adminStatusText,
+        adminSubtitle = adminSubtitle,
+        adminIconContainer = adminIconContainer,
+        adminStatusDot = adminStatusDot,
+        adminIndicatorShadow = adminIndicatorShadow,
         proximityButton = proximityButton,
         proximityToggleBg = proximityToggleBg,
         proximityIndicator = proximityIndicator,
-        proximityStatusText = proximityStatusText,
+        proximitySubtitle = proximitySubtitle,
+        proximityIconContainer = proximityIconContainer,
+        proximityStatusDot = proximityStatusDot,
+        proximityIndicatorShadow = proximityIndicatorShadow,
         autoHideButton = autoHideButton,
         autoHideToggleBg = autoHideToggleBg,
         autoHideIndicator = autoHideIndicator,
-        autoHideStatusText = autoHideStatusText,
+        autoHideSubtitle = autoHideSubtitle,
+        autoHideIconContainer = autoHideIconContainer,
+        autoHideStatusDot = autoHideStatusDot,
+        autoHideIndicatorShadow = autoHideIndicatorShadow,
         statsText = statsText
     }
 end
@@ -573,23 +722,26 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Padding = UDim.new(0, 8)
 
-    -- Luck Boost Frame
+    -- Luck Boost Frame with modern design and colored icon
     local luckFrame = createStyledFrame(layoutFrame, "LuckBoostFrame", GUIStyles.Sizes.ButtonFrame)
-    local luckButton, luckToggleBg, luckLabel, luckIndicator, luckStatusText = createToggleSystem(luckFrame, "LUCK BOOST :", false)
+    local luckButton, luckToggleBg, luckLabel, luckIndicator, luckSubtitle, luckIconContainer, luckStatusDot, luckIndicatorShadow = 
+        createToggleSystem(luckFrame, "Luck Boost", false, GUIStyles.Icons.Luck)
     luckButton.Name = "LuckBoostButton"
     luckToggleBg.Name = "LuckBoostToggleBg"
     luckIndicator.Name = "LuckBoostIndicator"
 
-    -- Weather Boost Frame
+    -- Weather Boost Frame with modern design and colored icon
     local weatherFrame = createStyledFrame(layoutFrame, "WeatherBoostFrame", GUIStyles.Sizes.ButtonFrame)
-    local weatherButton, weatherToggleBg, weatherLabel, weatherIndicator, weatherStatusText = createToggleSystem(weatherFrame, "WEATHER BOOST :", false)
+    local weatherButton, weatherToggleBg, weatherLabel, weatherIndicator, weatherSubtitle, weatherIconContainer, weatherStatusDot, weatherIndicatorShadow = 
+        createToggleSystem(weatherFrame, "Weather Boost", false, GUIStyles.Icons.Weather)
     weatherButton.Name = "WeatherBoostButton"
     weatherToggleBg.Name = "WeatherBoostToggleBg"
     weatherIndicator.Name = "WeatherBoostIndicator"
 
-    -- Smart Fishing Frame
+    -- Smart Fishing Frame with modern design and colored icon
     local smartFrame = createStyledFrame(layoutFrame, "SmartFishingFrame", GUIStyles.Sizes.ButtonFrame)
-    local smartButton, smartToggleBg, smartLabel, smartIndicator, smartStatusText = createToggleSystem(smartFrame, "SMART FISHING :", false)
+    local smartButton, smartToggleBg, smartLabel, smartIndicator, smartSubtitle, smartIconContainer, smartStatusDot, smartIndicatorShadow = 
+        createToggleSystem(smartFrame, "Smart Fishing", false, GUIStyles.Icons.Smart)
     smartButton.Name = "SmartFishingButton"
     smartToggleBg.Name = "SmartFishingToggleBg"
     smartIndicator.Name = "SmartFishingIndicator"
@@ -643,15 +795,24 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
         luckButton = luckButton,
         luckToggleBg = luckToggleBg,
         luckIndicator = luckIndicator,
-        luckStatusText = luckStatusText,
+        luckSubtitle = luckSubtitle,
+        luckIconContainer = luckIconContainer,
+        luckStatusDot = luckStatusDot,
+        luckIndicatorShadow = luckIndicatorShadow,
         weatherButton = weatherButton,
         weatherToggleBg = weatherToggleBg,
         weatherIndicator = weatherIndicator,
-        weatherStatusText = weatherStatusText,
+        weatherSubtitle = weatherSubtitle,
+        weatherIconContainer = weatherIconContainer,
+        weatherStatusDot = weatherStatusDot,
+        weatherIndicatorShadow = weatherIndicatorShadow,
         smartButton = smartButton,
         smartToggleBg = smartToggleBg,
         smartIndicator = smartIndicator,
-        smartStatusText = smartStatusText,
+        smartSubtitle = smartSubtitle,
+        smartIconContainer = smartIconContainer,
+        smartStatusDot = smartStatusDot,
+        smartIndicatorShadow = smartIndicatorShadow,
         fishValueTextBox = fishValueTextBox,
         advStatsText = advStatsText
     }
@@ -737,20 +898,22 @@ function GUIHandler.createBoatPanel(parent)
 end
 
 function GUIHandler.createFloatingButton(parent)
-    -- Create enhanced floating toggle button with modern design
+    -- Create enhanced floating toggle button with custom logo
     local FloatingButton = Instance.new("Frame")
     FloatingButton.Name = "FloatingButton"
     FloatingButton.Parent = parent
     FloatingButton.BackgroundColor3 = GUIStyles.Colors.Primary
-    FloatingButton.BackgroundTransparency = 0.1
+    FloatingButton.BackgroundTransparency = 0.05  -- More solid for logo visibility
     FloatingButton.BorderSizePixel = 0
-    FloatingButton.Position = UDim2.new(0, 20, 0.5, -35)
-    FloatingButton.Size = UDim2.new(0, 70, 0, 70)
+    FloatingButton.Position = UDim2.new(0, 20, 0.5, -40)  -- Slightly larger for better logo display
+    FloatingButton.Size = UDim2.new(0, 80, 0, 80)  -- Increased size for logo
     FloatingButton.ZIndex = 100
     FloatingButton.Active = true
     
     createUICorner(FloatingButton, GUIStyles.BorderRadius.XLarge)
     createBorder(FloatingButton, 2, GUIStyles.Colors.Primary)
+    
+    -- Enhanced gradient background for logo contrast
     createGradient(FloatingButton, GUIStyles.Colors.Primary, GUIStyles.Colors.Secondary, 45)
     
     -- Add multiple shadow layers for depth
@@ -760,8 +923,8 @@ function GUIHandler.createFloatingButton(parent)
     FloatingShadow1.BackgroundColor3 = GUIStyles.Colors.Black
     FloatingShadow1.BackgroundTransparency = 0.7
     FloatingShadow1.BorderSizePixel = 0
-    FloatingShadow1.Position = UDim2.new(0, 24, 0.5, -31)
-    FloatingShadow1.Size = UDim2.new(0, 70, 0, 70)
+    FloatingShadow1.Position = UDim2.new(0, 24, 0.5, -36)
+    FloatingShadow1.Size = UDim2.new(0, 80, 0, 80)
     FloatingShadow1.ZIndex = 98
     createUICorner(FloatingShadow1, GUIStyles.BorderRadius.XLarge)
     
@@ -771,23 +934,50 @@ function GUIHandler.createFloatingButton(parent)
     FloatingShadow2.BackgroundColor3 = GUIStyles.Colors.Black
     FloatingShadow2.BackgroundTransparency = 0.9
     FloatingShadow2.BorderSizePixel = 0
-    FloatingShadow2.Position = UDim2.new(0, 26, 0.5, -29)
-    FloatingShadow2.Size = UDim2.new(0, 70, 0, 70)
+    FloatingShadow2.Position = UDim2.new(0, 26, 0.5, -34)
+    FloatingShadow2.Size = UDim2.new(0, 80, 0, 80)
     FloatingShadow2.ZIndex = 97
     createUICorner(FloatingShadow2, GUIStyles.BorderRadius.XLarge)
     
-    -- Enhanced icon with better positioning
+    -- Custom logo from GitHub (replaces emoji)
+    local FloatingButtonLogo = Instance.new("ImageLabel")
+    FloatingButtonLogo.Name = "FloatingButtonLogo"
+    FloatingButtonLogo.Parent = FloatingButton
+    FloatingButtonLogo.BackgroundTransparency = 1
+    FloatingButtonLogo.Size = UDim2.new(0.7, 0, 0.7, 0)  -- Smaller to fit nicely with padding
+    FloatingButtonLogo.Position = UDim2.new(0.15, 0, 0.15, 0)  -- Centered with padding
+    FloatingButtonLogo.Image = "https://raw.githubusercontent.com/donitono/gamerxsan/main/logo.png"
+    FloatingButtonLogo.ScaleType = Enum.ScaleType.Fit  -- Maintain aspect ratio
+    FloatingButtonLogo.ImageColor3 = Color3.fromRGB(255, 255, 255)  -- White tint for visibility
+    FloatingButtonLogo.ZIndex = 101
+    
+    -- Add subtle glow effect around logo
+    local LogoGlow = Instance.new("Frame")
+    LogoGlow.Name = "LogoGlow"
+    LogoGlow.Parent = FloatingButton
+    LogoGlow.BackgroundColor3 = GUIStyles.Colors.Text
+    LogoGlow.BackgroundTransparency = 0.9
+    LogoGlow.BorderSizePixel = 0
+    LogoGlow.Size = UDim2.new(0.8, 0, 0.8, 0)
+    LogoGlow.Position = UDim2.new(0.1, 0, 0.1, 0)
+    LogoGlow.ZIndex = 100
+    createUICorner(LogoGlow, GUIStyles.BorderRadius.XLarge)
+    
+    -- Fallback text (in case image fails to load)
     local FloatingButtonText = Instance.new("TextLabel")
     FloatingButtonText.Name = "FloatingButtonText"
     FloatingButtonText.Parent = FloatingButton
     FloatingButtonText.BackgroundTransparency = 1
-    FloatingButtonText.Size = UDim2.new(0.8, 0, 0.8, 0)
-    FloatingButtonText.Position = UDim2.new(0.1, 0, 0.1, 0)
+    FloatingButtonText.Size = UDim2.new(0.6, 0, 0.6, 0)
+    FloatingButtonText.Position = UDim2.new(0.2, 0, 0.2, 0)
     FloatingButtonText.Font = GUIStyles.Fonts.Title
-    FloatingButtonText.Text = "🎣"
+    FloatingButtonText.Text = "GX"  -- Fallback text for your brand
     FloatingButtonText.TextColor3 = GUIStyles.Colors.Text
     FloatingButtonText.TextScaled = true
-    FloatingButtonText.ZIndex = 101
+    FloatingButtonText.TextStrokeTransparency = 0.5
+    FloatingButtonText.TextStrokeColor3 = GUIStyles.Colors.Black
+    FloatingButtonText.ZIndex = 99  -- Behind logo
+    FloatingButtonText.Visible = false  -- Hidden by default, shown if image fails
     
     local FloatingButtonClick = Instance.new("TextButton")
     FloatingButtonClick.Name = "FloatingButtonClick"
@@ -797,20 +987,20 @@ function GUIHandler.createFloatingButton(parent)
     FloatingButtonClick.Text = ""
     FloatingButtonClick.ZIndex = 102
     
-    -- Enhanced tooltip with modern styling
+    -- Enhanced tooltip with branding
     local FloatingTooltip = Instance.new("Frame")
     FloatingTooltip.Name = "FloatingTooltip"
     FloatingTooltip.Parent = parent
     FloatingTooltip.BackgroundColor3 = GUIStyles.Colors.Background
-    FloatingTooltip.BackgroundTransparency = 0.1
+    FloatingTooltip.BackgroundTransparency = 0.05
     FloatingTooltip.BorderSizePixel = 0
-    FloatingTooltip.Position = UDim2.new(0, 100, 0.5, -20)
-    FloatingTooltip.Size = UDim2.new(0, 140, 0, 40)
+    FloatingTooltip.Position = UDim2.new(0, 110, 0.5, -20)
+    FloatingTooltip.Size = UDim2.new(0, 160, 0, 40)
     FloatingTooltip.ZIndex = 105
     FloatingTooltip.Visible = false
     
     createUICorner(FloatingTooltip, GUIStyles.BorderRadius.Medium)
-    createBorder(FloatingTooltip, 1, GUIStyles.Colors.Border)
+    createBorder(FloatingTooltip, 1, GUIStyles.Colors.Primary)
     
     -- Add subtle shadow to tooltip
     local TooltipShadow = Instance.new("Frame")
@@ -819,8 +1009,8 @@ function GUIHandler.createFloatingButton(parent)
     TooltipShadow.BackgroundColor3 = GUIStyles.Colors.Black
     TooltipShadow.BackgroundTransparency = 0.8
     TooltipShadow.BorderSizePixel = 0
-    TooltipShadow.Position = UDim2.new(0, 102, 0.5, -18)
-    TooltipShadow.Size = UDim2.new(0, 140, 0, 40)
+    TooltipShadow.Position = UDim2.new(0, 112, 0.5, -18)
+    TooltipShadow.Size = UDim2.new(0, 160, 0, 40)
     TooltipShadow.ZIndex = 104
     TooltipShadow.Visible = false
     createUICorner(TooltipShadow, GUIStyles.BorderRadius.Medium)
@@ -831,16 +1021,34 @@ function GUIHandler.createFloatingButton(parent)
     FloatingTooltipText.BackgroundTransparency = 1
     FloatingTooltipText.Size = UDim2.new(1, 0, 1, 0)
     FloatingTooltipText.Font = GUIStyles.Fonts.Body
-    FloatingTooltipText.Text = "🎯 Toggle GUI Panel"
+    FloatingTooltipText.Text = "� GamerXSan Panel"  -- Custom tooltip with your brand
     FloatingTooltipText.TextColor3 = GUIStyles.Colors.Text
     FloatingTooltipText.TextScaled = true
     FloatingTooltipText.ZIndex = 106
+    
+    -- Add image loading error handling
+    FloatingButtonLogo.ImageRectSize = Vector2.new(0, 0)  -- Reset any crop
+    
+    -- Monitor image loading and show fallback if needed
+    task.spawn(function()
+        task.wait(3)  -- Wait 3 seconds for image to load
+        if FloatingButtonLogo.Image == "" or FloatingButtonLogo.ImageTransparency == 1 then
+            -- If image failed to load, show fallback text
+            FloatingButtonText.Visible = true
+            FloatingButtonLogo.Visible = false
+            print("⚠️ Logo image failed to load, using fallback text")
+        else
+            print("✅ Logo image loaded successfully!")
+        end
+    end)
 
     return {
         button = FloatingButton,
         shadow1 = FloatingShadow1,
         shadow2 = FloatingShadow2,
-        text = FloatingButtonText,
+        logo = FloatingButtonLogo,  -- New logo reference
+        text = FloatingButtonText,  -- Fallback text
+        glow = LogoGlow,           -- Glow effect
         clickButton = FloatingButtonClick,
         tooltip = FloatingTooltip,
         tooltipShadow = TooltipShadow,
@@ -926,46 +1134,128 @@ end
 --                         UPDATE FUNCTIONS
 -- ===================================================================
 
-function GUIHandler.updateToggleButton(button, toggleBg, state, indicator, statusText)
+function GUIHandler.updateToggleButton(button, toggleBg, state, indicator, subtitle, iconContainer, statusDot, indicatorShadow)
     local TweenService = game:GetService("TweenService")
+    local animationInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+    local fastInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     
-    -- Animate toggle background color (iOS style)
+    -- Animate toggle background color with modern transition
     local bgColorTween = TweenService:Create(
         toggleBg,
-        TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-        {BackgroundColor3 = state and GUIStyles.Colors.ToggleOn or GUIStyles.Colors.ToggleOff}
+        animationInfo,
+        {BackgroundColor3 = state and GUIStyles.Colors.Success or GUIStyles.Colors.ToggleOff}
     )
     bgColorTween:Play()
     
-    -- Animate indicator position (iOS toggle style)
+    -- Enhanced indicator animation with spring physics
     if indicator then
+        local newPosition = state and UDim2.new(1, -28, 0.5, -13) or UDim2.new(0, 2, 0.5, -13)
         local indicatorTween = TweenService:Create(
             indicator,
-            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {Position = state and UDim2.new(1, -30, 0, 2) or UDim2.new(0, 2, 0, 2)}
+            TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+            {Position = newPosition}
         )
         indicatorTween:Play()
+        
+        -- Animate indicator shadow to follow
+        if indicatorShadow then
+            local shadowTween = TweenService:Create(
+                indicatorShadow,
+                TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+                {Position = newPosition + UDim2.new(0, 1, 0, 2)}
+            )
+            shadowTween:Play()
+        end
+        
+        -- Add brief scale animation for feedback
+        local scaleTween = TweenService:Create(
+            indicator,
+            TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {Size = UDim2.new(0, 28, 0, 28)}
+        )
+        scaleTween:Play()
+        
+        -- Return to normal size
+        scaleTween.Completed:Connect(function()
+            TweenService:Create(
+                indicator,
+                TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Size = UDim2.new(0, 26, 0, 26)}
+            ):Play()
+        end)
     end
     
-    -- Update status text with animation (hidden for clean design)
-    if statusText then
-        statusText.Text = state and "ON" or "OFF"
+    -- Update subtitle text with smooth color transition
+    if subtitle then
+        subtitle.Text = state and "Enabled" or "Disabled"
         local textColorTween = TweenService:Create(
-            statusText,
-            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            subtitle,
+            fastInfo,
             {TextColor3 = state and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary}
         )
         textColorTween:Play()
     end
     
-    -- Update border color
-    if toggleBg:FindFirstChild("UIStroke") then
-        local borderTween = TweenService:Create(
-            toggleBg.UIStroke,
-            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-            {Color = state and GUIStyles.Colors.Success or GUIStyles.Colors.Border}
+    -- Update status dot with glow effect
+    if statusDot then
+        local dotTween = TweenService:Create(
+            statusDot,
+            fastInfo,
+            {
+                BackgroundColor3 = state and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary,
+                BackgroundTransparency = state and 0.2 or 0.8
+            }
         )
-        borderTween:Play()
+        dotTween:Play()
+        
+        -- Add brief pulse effect when activated
+        if state then
+            local pulseTween = TweenService:Create(
+                statusDot,
+                TweenInfo.new(0.6, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut, -1, true),
+                {BackgroundTransparency = 0.5}
+            )
+            pulseTween:Play()
+            
+            -- Stop pulse after 2 cycles
+            task.wait(1.2)
+            pulseTween:Cancel()
+            TweenService:Create(statusDot, fastInfo, {BackgroundTransparency = 0.2}):Play()
+        end
+    end
+    
+    -- Update icon container glow based on state
+    if iconContainer then
+        local iconParent = iconContainer.Parent
+        local iconGlow = iconParent:FindFirstChild("Frame") -- The glow frame
+        if iconGlow and iconGlow ~= iconContainer then
+            local glowTween = TweenService:Create(
+                iconGlow,
+                fastInfo,
+                {BackgroundTransparency = state and 0.7 or 0.85}
+            )
+            glowTween:Play()
+        end
+    end
+    
+    -- Add subtle haptic feedback simulation
+    if state then
+        -- Brief container pulse for positive feedback
+        local container = button.Parent
+        local feedbackTween = TweenService:Create(
+            container,
+            TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {BackgroundTransparency = 0.01}
+        )
+        feedbackTween:Play()
+        
+        feedbackTween.Completed:Connect(function()
+            TweenService:Create(
+                container,
+                TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {BackgroundTransparency = 0.03}
+            ):Play()
+        end)
     end
 end
 
@@ -1076,7 +1366,10 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
                 guiComponents.security.adminToggleBg, 
                 SecuritySettings.AdminDetection,
                 guiComponents.security.adminIndicator,
-                guiComponents.security.adminStatusText
+                guiComponents.security.adminSubtitle,
+                guiComponents.security.adminIconContainer,
+                guiComponents.security.adminStatusDot,
+                guiComponents.security.adminIndicatorShadow
             )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(SecuritySettings.AdminDetection and "🔒 Admin Detection enabled!" or "🔒 Admin Detection disabled!", SecuritySettings.AdminDetection and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
@@ -1094,7 +1387,10 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
                 guiComponents.security.proximityToggleBg, 
                 SecuritySettings.PlayerProximityAlert,
                 guiComponents.security.proximityIndicator,
-                guiComponents.security.proximityStatusText
+                guiComponents.security.proximitySubtitle,
+                guiComponents.security.proximityIconContainer,
+                guiComponents.security.proximityStatusDot,
+                guiComponents.security.proximityIndicatorShadow
             )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(SecuritySettings.PlayerProximityAlert and "📡 Proximity Alert enabled!" or "📡 Proximity Alert disabled!", SecuritySettings.PlayerProximityAlert and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
@@ -1112,7 +1408,10 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
                 guiComponents.security.autoHideToggleBg, 
                 SecuritySettings.AutoHideOnAdmin,
                 guiComponents.security.autoHideIndicator,
-                guiComponents.security.autoHideStatusText
+                guiComponents.security.autoHideSubtitle,
+                guiComponents.security.autoHideIconContainer,
+                guiComponents.security.autoHideStatusDot,
+                guiComponents.security.autoHideIndicatorShadow
             )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(SecuritySettings.AutoHideOnAdmin and "🙈 Auto Hide enabled!" or "🙈 Auto Hide disabled!", SecuritySettings.AutoHideOnAdmin and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
@@ -1131,7 +1430,10 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
                 guiComponents.advanced.luckToggleBg, 
                 Settings.LuckBoost,
                 guiComponents.advanced.luckIndicator,
-                guiComponents.advanced.luckStatusText
+                guiComponents.advanced.luckSubtitle,
+                guiComponents.advanced.luckIconContainer,
+                guiComponents.advanced.luckStatusDot,
+                guiComponents.advanced.luckIndicatorShadow
             )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(Settings.LuckBoost and "🍀 Luck Boost enabled!" or "🍀 Luck Boost disabled!", Settings.LuckBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
@@ -1149,7 +1451,10 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
                 guiComponents.advanced.weatherToggleBg, 
                 Settings.WeatherBoost,
                 guiComponents.advanced.weatherIndicator,
-                guiComponents.advanced.weatherStatusText
+                guiComponents.advanced.weatherSubtitle,
+                guiComponents.advanced.weatherIconContainer,
+                guiComponents.advanced.weatherStatusDot,
+                guiComponents.advanced.weatherIndicatorShadow
             )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(Settings.WeatherBoost and "🌦️ Weather Boost enabled!" or "🌦️ Weather Boost disabled!", Settings.WeatherBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
@@ -1167,7 +1472,10 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
                 guiComponents.advanced.smartToggleBg, 
                 Settings.SmartFishing,
                 guiComponents.advanced.smartIndicator,
-                guiComponents.advanced.smartStatusText
+                guiComponents.advanced.smartSubtitle,
+                guiComponents.advanced.smartIconContainer,
+                guiComponents.advanced.smartStatusDot,
+                guiComponents.advanced.smartIndicatorShadow
             )
             if callbacks and callbacks.createNotification then
                 callbacks.createNotification(Settings.SmartFishing and "🧠 Smart Fishing enabled!" or "🧠 Smart Fishing disabled!", Settings.SmartFishing and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
@@ -1234,33 +1542,64 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
             guiComponents.floating.tooltip.Visible = true
             guiComponents.floating.tooltipShadow.Visible = true
             
-            -- Animate tooltip appearance
+            -- Animate tooltip appearance (adjusted position for larger button)
             local TweenService = game:GetService("TweenService")
             guiComponents.floating.tooltip:TweenPosition(
-                UDim2.new(0, 105, 0.5, -20),
+                UDim2.new(0, 115, 0.5, -20),  -- Adjusted for 80px button
                 "Out", "Back", GUIStyles.Animations.Fast, true
             )
             guiComponents.floating.tooltipShadow:TweenPosition(
-                UDim2.new(0, 107, 0.5, -18),
+                UDim2.new(0, 117, 0.5, -18),  -- Adjusted for 80px button
                 "Out", "Back", GUIStyles.Animations.Fast, true
             )
             
-            -- Scale effect on button
+            -- Scale effect on button (updated for new size)
             guiComponents.floating.button:TweenSize(
-                UDim2.new(0, 75, 0, 75),
+                UDim2.new(0, 85, 0, 85),  -- Hover scale for 80px button
                 "Out", "Back", GUIStyles.Animations.Fast, true
             )
+            
+            -- Add logo glow effect on hover
+            if guiComponents.floating.logo then
+                TweenService:Create(guiComponents.floating.logo, TweenInfo.new(0.2), {
+                    ImageColor3 = GUIStyles.Colors.Primary,
+                    Size = UDim2.new(0.75, 0, 0.75, 0)  -- Slightly larger on hover
+                }):Play()
+            end
+            
+            -- Enhance glow effect
+            if guiComponents.floating.glow then
+                TweenService:Create(guiComponents.floating.glow, TweenInfo.new(0.2), {
+                    BackgroundTransparency = 0.7
+                }):Play()
+            end
         end)
 
         connections[#connections + 1] = guiComponents.floating.button.MouseLeave:Connect(function()
             guiComponents.floating.tooltip.Visible = false
             guiComponents.floating.tooltipShadow.Visible = false
             
-            -- Return to normal size
+            -- Return to normal size (updated for new size)
             guiComponents.floating.button:TweenSize(
-                UDim2.new(0, 70, 0, 70),
+                UDim2.new(0, 80, 0, 80),  -- Normal size for 80px button
                 "Out", "Quad", GUIStyles.Animations.Fast, true
             )
+            
+            -- Return logo to normal state
+            local TweenService = game:GetService("TweenService")
+            if guiComponents.floating.logo then
+                TweenService:Create(guiComponents.floating.logo, TweenInfo.new(0.2), {
+                    ImageColor3 = Color3.fromRGB(255, 255, 255),  -- Back to white
+                    Size = UDim2.new(0.7, 0, 0.7, 0)  -- Normal size
+                }):Play()
+            end
+            
+            -- Return glow to normal
+            if guiComponents.floating.glow then
+                TweenService:Create(guiComponents.floating.glow, TweenInfo.new(0.2), {
+                    BackgroundTransparency = 0.9
+                }):Play()
+            end
         end)
         print("✅ Floating button hover effects connected")
     end
