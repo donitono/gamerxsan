@@ -910,7 +910,7 @@ function GUIHandler.createFloatingButton(parent)
     FloatingButton.ZIndex = 100
     FloatingButton.Active = true
     
-    createUICorner(FloatingButton, GUIStyles.BorderRadius.XLarge)
+    createUICorner(FloatingButton, UDim.new(0, 40))  -- Perfect circle (40px radius for 80px button)
     createBorder(FloatingButton, 2, GUIStyles.Colors.Primary)
     
     -- Enhanced gradient background for logo contrast
@@ -926,7 +926,7 @@ function GUIHandler.createFloatingButton(parent)
     FloatingShadow1.Position = UDim2.new(0, 24, 0.5, -36)
     FloatingShadow1.Size = UDim2.new(0, 80, 0, 80)
     FloatingShadow1.ZIndex = 98
-    createUICorner(FloatingShadow1, GUIStyles.BorderRadius.XLarge)
+    createUICorner(FloatingShadow1, UDim.new(0, 40))  -- Perfect circle for shadow
     
     local FloatingShadow2 = Instance.new("Frame")
     FloatingShadow2.Name = "FloatingShadow2"
@@ -937,7 +937,7 @@ function GUIHandler.createFloatingButton(parent)
     FloatingShadow2.Position = UDim2.new(0, 26, 0.5, -34)
     FloatingShadow2.Size = UDim2.new(0, 80, 0, 80)
     FloatingShadow2.ZIndex = 97
-    createUICorner(FloatingShadow2, GUIStyles.BorderRadius.XLarge)
+    createUICorner(FloatingShadow2, UDim.new(0, 40))  -- Perfect circle for shadow
     
     -- Custom logo from GitHub (replaces emoji)
     local FloatingButtonLogo = Instance.new("ImageLabel")
@@ -961,7 +961,7 @@ function GUIHandler.createFloatingButton(parent)
     LogoGlow.Size = UDim2.new(0.8, 0, 0.8, 0)
     LogoGlow.Position = UDim2.new(0.1, 0, 0.1, 0)
     LogoGlow.ZIndex = 100
-    createUICorner(LogoGlow, GUIStyles.BorderRadius.XLarge)
+    createUICorner(LogoGlow, UDim.new(0, 32))  -- Circular glow (80% of 40px radius)
     
     -- Fallback text (in case image fails to load)
     local FloatingButtonText = Instance.new("TextLabel")
