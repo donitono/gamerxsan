@@ -2223,89 +2223,35 @@ local function createCompleteGUI()
         end)
     end)
 
-    -- Security button connections
-    connections[#connections + 1] = AdminDetectionButton.MouseButton1Click:Connect(function()
-        SecuritySettings.AdminDetection = not SecuritySettings.AdminDetection
-        AdminDetectionButton.Text = SecuritySettings.AdminDetection and "ON" or "OFF"
-        AdminDetectionWarna.BackgroundColor3 = SecuritySettings.AdminDetection and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
-        if SecuritySettings.AdminDetection then
-            createNotification("🔒 Admin Detection enabled!", Color3.fromRGB(0, 200, 0))
-        else
-            createNotification("🔒 Admin Detection disabled!", Color3.fromRGB(200, 0, 0))
-        end
-    end)
-
-    connections[#connections + 1] = ProximityAlertButton.MouseButton1Click:Connect(function()
-        SecuritySettings.PlayerProximityAlert = not SecuritySettings.PlayerProximityAlert
-        ProximityAlertButton.Text = SecuritySettings.PlayerProximityAlert and "ON" or "OFF"
-        ProximityAlertWarna.BackgroundColor3 = SecuritySettings.PlayerProximityAlert and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
-        if SecuritySettings.PlayerProximityAlert then
-            createNotification("📡 Proximity Alert enabled!", Color3.fromRGB(0, 200, 0))
-        else
-            createNotification("📡 Proximity Alert disabled!", Color3.fromRGB(200, 0, 0))
-        end
-    end)
-
-    connections[#connections + 1] = AutoHideButton.MouseButton1Click:Connect(function()
-        SecuritySettings.AutoHideOnAdmin = not SecuritySettings.AutoHideOnAdmin
-        AutoHideButton.Text = SecuritySettings.AutoHideOnAdmin and "ON" or "OFF"
-        AutoHideWarna.BackgroundColor3 = SecuritySettings.AutoHideOnAdmin and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
-        if SecuritySettings.AutoHideOnAdmin then
-            createNotification("🙈 Auto Hide enabled!", Color3.fromRGB(0, 200, 0))
-        else
-            createNotification("🙈 Auto Hide disabled!", Color3.fromRGB(200, 0, 0))
-        end
-    end)
-
-    -- Advanced button connections
-    connections[#connections + 1] = LuckBoostButton.MouseButton1Click:Connect(function()
-        Settings.LuckBoost = not Settings.LuckBoost
-        LuckBoostButton.Text = Settings.LuckBoost and "ON" or "OFF"
-        LuckBoostWarna.BackgroundColor3 = Settings.LuckBoost and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
-        if Settings.LuckBoost then
-            createNotification("🍀 Luck Boost enabled!", Color3.fromRGB(0, 255, 0))
-        else
-            createNotification("🍀 Luck Boost disabled!", Color3.fromRGB(200, 0, 0))
-        end
-    end)
-
-    connections[#connections + 1] = WeatherBoostButton.MouseButton1Click:Connect(function()
-        Settings.WeatherBoost = not Settings.WeatherBoost
-        WeatherBoostButton.Text = Settings.WeatherBoost and "ON" or "OFF"
-        WeatherBoostWarna.BackgroundColor3 = Settings.WeatherBoost and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
-        if Settings.WeatherBoost then
-            createNotification("🌦️ Weather Boost enabled!", Color3.fromRGB(0, 255, 0))
-        else
-            createNotification("🌦️ Weather Boost disabled!", Color3.fromRGB(200, 0, 0))
-        end
-    end)
-
-    connections[#connections + 1] = SmartFishingButton.MouseButton1Click:Connect(function()
-        Settings.SmartFishing = not Settings.SmartFishing
-        SmartFishingButton.Text = Settings.SmartFishing and "ON" or "OFF"
-        SmartFishingWarna.BackgroundColor3 = Settings.SmartFishing and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(0, 0, 0)
-        if Settings.SmartFishing then
-            createNotification("🧠 Smart Fishing enabled!", Color3.fromRGB(0, 255, 0))
-        else
-            createNotification("🧠 Smart Fishing disabled!", Color3.fromRGB(200, 0, 0))
-        end
-    end)
-
-    -- Fish Value TextBox
-    connections[#connections + 1] = FishValueTextBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed then
-            local value = tonumber(FishValueTextBox.Text)
-            if value and value >= 10 and value <= 1000 then
-                Settings.MinFishValue = value
-                Settings.FishValueFilter = true
-                createNotification("💎 Min Fish Value set to ₡" .. value, Color3.fromRGB(0, 150, 255))
-                FishValueTextBox.Text = ""
-            else
-                createNotification("❌ Invalid value! Use 10-1000", Color3.fromRGB(255, 0, 0))
-                FishValueTextBox.Text = ""
+    -- Setup GUI Event Handlers using GUI Handler module
+    local callbacks = {
+        createNotification = createNotification,
+        updateTitle = function(title)
+            -- Update main title if needed
+            if Tittle then
+                Tittle.Text = title
             end
         end
-    end)
+    }
+    
+    -- Setup all event handlers using the GUI Handler
+    connections = GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings, connections, callbacks)
+    
+    -- Setup panel switcher from GUI Handler
+    local showGUIPanel = GUIHandler.createPanelSwitcher(guiComponents, callbacks)
+    
+    -- Fix floating button parent (should be attached to main GUI)
+    guiComponents.floating.button.Parent = ZayrosFISHIT
+    guiComponents.floating.shadow.Parent = ZayrosFISHIT
+    guiComponents.floating.tooltip.Parent = ZayrosFISHIT
+    
+    -- Initialize UI state
+    GUIHandler.updateToggleButton(guiComponents.security.adminButton, guiComponents.security.adminIndicator, SecuritySettings.AdminDetection)
+    GUIHandler.updateToggleButton(guiComponents.security.proximityButton, guiComponents.security.proximityIndicator, SecuritySettings.PlayerProximityAlert)
+    GUIHandler.updateToggleButton(guiComponents.security.autoHideButton, guiComponents.security.autoHideIndicator, SecuritySettings.AutoHideOnAdmin)
+    GUIHandler.updateToggleButton(guiComponents.advanced.luckButton, guiComponents.advanced.luckIndicator, Settings.LuckBoost or false)
+    GUIHandler.updateToggleButton(guiComponents.advanced.weatherButton, guiComponents.advanced.weatherIndicator, Settings.WeatherBoost or false)
+    GUIHandler.updateToggleButton(guiComponents.advanced.smartButton, guiComponents.advanced.smartIndicator, Settings.SmartFishing or false)
 
     -- Page switching function
     local function showPanel(pageName)
@@ -2352,10 +2298,12 @@ local function createCompleteGUI()
 
     connections[#connections + 1] = SECURITY.MouseButton1Click:Connect(function()
         showPanel("Security")
+        showGUIPanel("Security")  -- Also show GUI panel
     end)
 
     connections[#connections + 1] = ADVANCED.MouseButton1Click:Connect(function()
         showPanel("Advanced")
+        showGUIPanel("Advanced")  -- Also show GUI panel
     end)
 
     -- ===============================================================
@@ -2433,9 +2381,9 @@ local function createCompleteGUI()
     -- ===============================================================
     --                         FLOATING BUTTON
     -- ===============================================================
-    
-    -- Create enhanced floating toggle button
-    local FloatingButton = Instance.new("Frame")
+    --                    FLOATING BUTTON SETUP COMPLETED  
+    -- ===============================================================
+    -- (Floating button sudah dibuat oleh GUI Handler module)
     FloatingButton.Name = "FloatingButton"
     FloatingButton.Parent = ZayrosFISHIT
     FloatingButton.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
