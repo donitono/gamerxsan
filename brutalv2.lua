@@ -2252,6 +2252,9 @@ local function createCompleteGUI()
     GUIHandler.updateToggleButton(guiComponents.advanced.luckButton, guiComponents.advanced.luckIndicator, Settings.LuckBoost or false)
     GUIHandler.updateToggleButton(guiComponents.advanced.weatherButton, guiComponents.advanced.weatherIndicator, Settings.WeatherBoost or false)
     GUIHandler.updateToggleButton(guiComponents.advanced.smartButton, guiComponents.advanced.smartIndicator, Settings.SmartFishing or false)
+    
+    -- Debug: Print that GUI Handler is loaded and working
+    createNotification("🔧 GUI Handler loaded! Buttons should work now.", Color3.fromRGB(0, 255, 255))
 
     -- Page switching function
     local function showPanel(pageName)
@@ -2381,11 +2384,10 @@ local function createCompleteGUI()
     -- ===============================================================
     --                         FLOATING BUTTON
     -- ===============================================================
+    -- ===============================================================
     --                    FLOATING BUTTON SETUP COMPLETED  
     -- ===============================================================
     -- (Floating button sudah dibuat oleh GUI Handler module)
-    FloatingButton.Name = "FloatingButton"
-    FloatingButton.Parent = ZayrosFISHIT
     FloatingButton.BackgroundColor3 = Color3.fromRGB(0, 162, 255)
     FloatingButton.BackgroundTransparency = 0.2
     FloatingButton.BorderSizePixel = 0
