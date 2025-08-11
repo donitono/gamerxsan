@@ -11,32 +11,46 @@ local GUIHandler = {}
 
 local GUIStyles = {
     Colors = {
-        Background = Color3.fromRGB(30, 30, 35),        -- Darker background
-        Primary = Color3.fromRGB(64, 156, 255),         -- Modern blue
-        Secondary = Color3.fromRGB(128, 90, 213),       -- Purple accent
-        Success = Color3.fromRGB(34, 197, 94),          -- Green success
-        Danger = Color3.fromRGB(239, 68, 68),           -- Red danger
-        Warning = Color3.fromRGB(245, 158, 11),         -- Orange warning
-        Text = Color3.fromRGB(248, 250, 252),           -- Light text
-        TextSecondary = Color3.fromRGB(148, 163, 184),  -- Gray text
-        Black = Color3.fromRGB(15, 15, 20),             -- True black
+        Background = Color3.fromRGB(28, 28, 30),        -- iOS dark background
+        Primary = Color3.fromRGB(74, 144, 226),         -- Modern blue like image
+        Secondary = Color3.fromRGB(108, 99, 255),       -- Purple accent
+        Success = Color3.fromRGB(52, 199, 89),          -- iOS green for toggles
+        Danger = Color3.fromRGB(255, 59, 48),           -- iOS red
+        Warning = Color3.fromRGB(255, 149, 0),          -- iOS orange
+        Text = Color3.fromRGB(255, 255, 255),           -- Primary white text
+        TextSecondary = Color3.fromRGB(152, 152, 157),  -- iOS secondary text color
+        Black = Color3.fromRGB(0, 0, 0),                -- Pure black
         Purple = Color3.fromRGB(147, 51, 234),          -- Accent purple
-        Dark = Color3.fromRGB(51, 65, 85),              -- Dark gray
-        Border = Color3.fromRGB(71, 85, 105),           -- Border color
-        Hover = Color3.fromRGB(45, 45, 55)              -- Hover state
+        Dark = Color3.fromRGB(44, 44, 46),              -- iOS surface color
+        Border = Color3.fromRGB(58, 58, 60),            -- iOS border color
+        Hover = Color3.fromRGB(54, 54, 56),             -- Hover state
+        
+        -- Toggle specific colors matching image
+        ToggleOn = Color3.fromRGB(52, 199, 89),         -- Green when active
+        ToggleOff = Color3.fromRGB(120, 120, 128),      -- Gray when inactive  
+        ToggleTrack = Color3.fromRGB(39, 39, 41),       -- Toggle background track
+        Separator = Color3.fromRGB(54, 54, 56),         -- Line separators
     },
     
     Fonts = {
-        Primary = Enum.Font.GothamSemibold,
-        Title = Enum.Font.GothamBold,
-        Body = Enum.Font.Gotham
+        Primary = Enum.Font.Gotham,                     -- Clean body font
+        Title = Enum.Font.GothamMedium,                 -- Medium weight titles
+        Body = Enum.Font.Gotham,                        -- Regular body text
+        Icon = Enum.Font.GothamBold                     -- Bold for icons
     },
     
     Sizes = {
         ButtonFrame = UDim2.new(0.898, 0, 0.106, 0),
         ToggleButton = UDim2.new(0.207, 0, 0.784, 0),
         Indicator = UDim2.new(0.257, 0, 0.730, 0),
-        FloatingButton = UDim2.new(0, 60, 0, 60)
+        FloatingButton = UDim2.new(0, 60, 0, 60),
+        
+        -- New iOS-style sizes
+        RowHeight = 56,                                 -- Standard row height
+        ToggleHeight = 32,                              -- Toggle switch height  
+        ToggleWidth = 52,                               -- Toggle switch width
+        IconSize = 24,                                  -- Icon size
+        Padding = 16                                    -- Standard padding
     },
     
     Positions = {
@@ -45,19 +59,21 @@ local GUIStyles = {
         Indicator = UDim2.new(0.719, 0, 0.135, 0)
     },
     
-    -- New: Animation settings
+    -- Animation settings matching iOS smoothness
     Animations = {
         Fast = 0.15,
-        Normal = 0.3,
-        Slow = 0.5
+        Normal = 0.25,
+        Slow = 0.4
     },
     
-    -- New: Border radius settings
+    -- Border radius matching iOS design
     BorderRadius = {
-        Small = 6,
-        Medium = 8,
-        Large = 12,
-        XLarge = 16
+        Small = UDim.new(0, 8),                         -- Small radius
+        Medium = UDim.new(0, 12),                       -- Medium radius
+        Large = UDim.new(0, 16),                        -- Large radius
+        XLarge = UDim.new(0, 20),                       -- Extra large
+        Toggle = UDim.new(0, 16),                       -- Perfect for toggle switches
+        Row = UDim.new(0, 12)                           -- Row containers
     }
 }
 
@@ -126,66 +142,100 @@ local function createStyledFrame(parent, name, size, position, backgroundColor)
 end
 
 local function createToggleSystem(parent, labelText, settingValue)
-    -- Create main container with better styling
+    -- Create main container with iOS-style design
     local container = Instance.new("Frame")
     container.Parent = parent
-    container.BackgroundTransparency = 1
+    container.BackgroundColor3 = GUIStyles.Colors.Dark
+    container.BackgroundTransparency = 0.1
+    container.BorderSizePixel = 0
     container.Size = UDim2.new(1, 0, 1, 0)
+    createUICorner(container, GUIStyles.BorderRadius.Row)
     
-    -- Create label with better typography
+    -- Icon frame on the left (like in the image)
+    local iconFrame = Instance.new("Frame")
+    iconFrame.Parent = container
+    iconFrame.BackgroundColor3 = GUIStyles.Colors.Primary
+    iconFrame.BorderSizePixel = 0
+    iconFrame.Position = UDim2.new(0, 16, 0.5, -12)
+    iconFrame.Size = UDim2.new(0, 24, 0, 24)
+    createUICorner(iconFrame, UDim.new(0, 6))
+    
+    -- Icon text
+    local iconText = Instance.new("TextLabel")
+    iconText.Parent = iconFrame
+    iconText.BackgroundTransparency = 1
+    iconText.Size = UDim2.new(1, 0, 1, 0)
+    iconText.Font = GUIStyles.Fonts.Icon
+    iconText.Text = "⚙️"
+    iconText.TextColor3 = GUIStyles.Colors.Text
+    iconText.TextScaled = true
+    
+    -- Create label with iOS-style typography
     local label = Instance.new("TextLabel")
     label.Parent = container
     label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0.030, 0, 0, 0)
-    label.Size = UDim2.new(0.600, 0, 1, 0)
+    label.Position = UDim2.new(0, 56, 0, 0)  -- After icon + padding
+    label.Size = UDim2.new(1, -140, 1, 0)    -- Leave space for toggle
     label.Font = GUIStyles.Fonts.Primary
     label.Text = labelText
     label.TextColor3 = GUIStyles.Colors.Text
-    label.TextScaled = true
+    label.TextSize = 17  -- iOS standard text size
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
     
-    -- Create modern toggle switch background
+    -- Create modern iOS-style toggle switch
     local toggleBg = Instance.new("Frame")
     toggleBg.Parent = container
-    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.Dark
+    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.ToggleOn or GUIStyles.Colors.ToggleOff
     toggleBg.BorderSizePixel = 0
-    toggleBg.Position = UDim2.new(0.700, 0, 0.2, 0)
-    toggleBg.Size = UDim2.new(0.15, 0, 0.6, 0)
+    toggleBg.Position = UDim2.new(1, -68, 0.5, -16)  -- 52px width + 16px padding
+    toggleBg.Size = UDim2.new(0, 52, 0, 32)  -- iOS toggle dimensions
+    createUICorner(toggleBg, GUIStyles.BorderRadius.Toggle)
     
-    createUICorner(toggleBg, GUIStyles.BorderRadius.XLarge)
-    createBorder(toggleBg, 2, settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.Border)
-    
-    -- Create toggle circle/indicator
+    -- Toggle circle/thumb (the white circle)
     local indicator = Instance.new("Frame")
     indicator.Parent = toggleBg
     indicator.BackgroundColor3 = GUIStyles.Colors.Text
     indicator.BorderSizePixel = 0
-    indicator.Position = settingValue and UDim2.new(0.55, 0, 0.1, 0) or UDim2.new(0.05, 0, 0.1, 0)
-    indicator.Size = UDim2.new(0.4, 0, 0.8, 0)
-    
-    createUICorner(indicator, GUIStyles.BorderRadius.XLarge)
+    indicator.Position = settingValue and UDim2.new(1, -30, 0, 2) or UDim2.new(0, 2, 0, 2)
+    indicator.Size = UDim2.new(0, 28, 0, 28)  -- Circle size
+    createUICorner(indicator, UDim.new(0, 14))  -- Perfect circle
     
     -- Create invisible button for clicking
     local button = Instance.new("TextButton")
     button.Parent = container
     button.BackgroundTransparency = 1
     button.Size = UDim2.new(1, 0, 1, 0)
-    button.ZIndex = 2
-    button.Font = GUIStyles.Fonts.Primary
     button.Text = ""
+    button.ZIndex = 2
     
-    -- Create status text
+    -- Status text (ON/OFF) - optional, can be hidden for cleaner look like image
     local statusText = Instance.new("TextLabel")
     statusText.Parent = container
     statusText.BackgroundTransparency = 1
-    statusText.Position = UDim2.new(0.870, 0, 0, 0)
-    statusText.Size = UDim2.new(0.100, 0, 1, 0)
+    statusText.Position = UDim2.new(1, -68, 0.7, 0)
+    statusText.Size = UDim2.new(0, 52, 0, 15)
     statusText.Font = GUIStyles.Fonts.Body
-    statusText.Text = settingValue and "ON" or "OFF"
-    statusText.TextColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary
-    statusText.TextScaled = true
+    statusText.Text = ""  -- Hidden for clean look like image
+    statusText.TextColor3 = settingValue and GUIStyles.Colors.ToggleOn or GUIStyles.Colors.TextSecondary
+    statusText.TextSize = 12
     statusText.TextXAlignment = Enum.TextXAlignment.Center
+    statusText.Visible = false  -- Hide for cleaner design
+    
+    -- Add hover effect for the entire row
+    button.MouseEnter:Connect(function()
+        local TweenService = game:GetService("TweenService")
+        TweenService:Create(container, TweenInfo.new(0.15), {
+            BackgroundTransparency = 0.05
+        }):Play()
+    end)
+    
+    button.MouseLeave:Connect(function()
+        local TweenService = game:GetService("TweenService")
+        TweenService:Create(container, TweenInfo.new(0.15), {
+            BackgroundTransparency = 0.1
+        }):Play()
+    end)
     
     return button, toggleBg, label, indicator, statusText
 end
@@ -195,19 +245,25 @@ end
 -- ===================================================================
 
 function GUIHandler.createSecurityPanel(parent, SecuritySettings)
+    -- Create clean iOS-style security panel
     local SecurityFrame = Instance.new("ScrollingFrame")
     SecurityFrame.Name = "SecurityFrame"
     SecurityFrame.Parent = parent
     SecurityFrame.Active = true
-    SecurityFrame.BackgroundTransparency = 1
+    SecurityFrame.BackgroundColor3 = GUIStyles.Colors.Background
+    SecurityFrame.BackgroundTransparency = 0.05
+    SecurityFrame.BorderSizePixel = 0
     SecurityFrame.Position = UDim2.new(0.376, 0, 0.147, 0)
     SecurityFrame.Size = UDim2.new(0.624, 0, 0.853, 0)
     SecurityFrame.Visible = false
     SecurityFrame.ZIndex = 2
     SecurityFrame.ScrollBarThickness = 6
+    
+    -- Add rounded corners to main panel
+    createUICorner(SecurityFrame, GUIStyles.BorderRadius.Large)
 
     local layoutFrame = createStyledFrame(SecurityFrame, "SecurityListLayoutFrame", 
-        UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0.022, 0))
+        UDim2.new(1, 0, 1, 0), UDim2.new(0, 0, 0, 0))
     layoutFrame.BackgroundTransparency = 1
 
     local listLayout = Instance.new("UIListLayout")
@@ -215,42 +271,42 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     listLayout.Parent = layoutFrame
     listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    listLayout.Padding = UDim.new(0, 8)
+    listLayout.Padding = UDim.new(0, 2)  -- Tighter spacing like iOS
+    
+    -- Add padding to layout frame
+    local layoutPadding = Instance.new("UIPadding")
+    layoutPadding.Parent = layoutFrame
+    layoutPadding.PaddingTop = UDim.new(0, 16)
+    layoutPadding.PaddingLeft = UDim.new(0, 16)
+    layoutPadding.PaddingRight = UDim.new(0, 16)
+    layoutPadding.PaddingBottom = UDim.new(0, 16)
 
-    -- Admin Detection Frame
-    local adminFrame = createStyledFrame(layoutFrame, "AdminDetectionFrame", GUIStyles.Sizes.ButtonFrame)
-    local adminButton, adminToggleBg, adminLabel, adminIndicator, adminStatusText = createToggleSystem(adminFrame, "ADMIN DETECTION :", SecuritySettings.AdminDetection)
+    -- Auto Fish Row (matching image)
+    local adminFrame = createStyledFrame(layoutFrame, "AdminDetectionFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    adminFrame.BackgroundTransparency = 1
+    local adminButton, adminToggleBg, adminLabel, adminIndicator, adminStatusText = createToggleSystem(adminFrame, "Auto Fish", SecuritySettings.AdminDetection)
     adminButton.Name = "AdminDetectionButton"
     adminToggleBg.Name = "AdminDetectionToggleBg"
     adminIndicator.Name = "AdminDetectionIndicator"
 
-    -- Proximity Alert Frame
-    local proximityFrame = createStyledFrame(layoutFrame, "ProximityAlertFrame", GUIStyles.Sizes.ButtonFrame)
-    local proximityButton, proximityToggleBg, proximityLabel, proximityIndicator, proximityStatusText = createToggleSystem(proximityFrame, "PROXIMITY ALERT :", SecuritySettings.PlayerProximityAlert)
+    -- Reset Fish Row (matching image)
+    local proximityFrame = createStyledFrame(layoutFrame, "ProximityAlertFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    proximityFrame.BackgroundTransparency = 1
+    local proximityButton, proximityToggleBg, proximityLabel, proximityIndicator, proximityStatusText = createToggleSystem(proximityFrame, "Reset Fish", SecuritySettings.PlayerProximityAlert)
     proximityButton.Name = "ProximityAlertButton"
     proximityToggleBg.Name = "ProximityAlertToggleBg"
     proximityIndicator.Name = "ProximityAlertIndicator"
 
-    -- Auto Hide Frame
-    local autoHideFrame = createStyledFrame(layoutFrame, "AutoHideFrame", GUIStyles.Sizes.ButtonFrame)
-    local autoHideButton, autoHideToggleBg, autoHideLabel, autoHideIndicator, autoHideStatusText = createToggleSystem(autoHideFrame, "AUTO HIDE ON ADMIN :", SecuritySettings.AutoHideOnAdmin)
+    -- Sell All Fishes Anywhere Row (matching image)
+    local autoHideFrame = createStyledFrame(layoutFrame, "AutoHideFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    autoHideFrame.BackgroundTransparency = 1
+    local autoHideButton, autoHideToggleBg, autoHideLabel, autoHideIndicator, autoHideStatusText = createToggleSystem(autoHideFrame, "Sell All Fishes Anywhere", SecuritySettings.AutoHideOnAdmin)
     autoHideButton.Name = "AutoHideButton"
     autoHideToggleBg.Name = "AutoHideToggleBg"
     autoHideIndicator.Name = "AutoHideIndicator"
-
-    -- Security Statistics Frame
-    local statsFrame = createStyledFrame(layoutFrame, "SecurityStatsFrame", GUIStyles.Sizes.ButtonFrame)
-    
-    local statsText = Instance.new("TextLabel")
-    statsText.Name = "SecurityStatsText"
-    statsText.Parent = statsFrame
-    statsText.BackgroundTransparency = 1
-    statsText.Position = UDim2.new(0.030, 0, 0.216, 0)
-    statsText.Size = UDim2.new(0.940, 0, 0.568, 0)
-    statsText.Font = GUIStyles.Fonts.Primary
-    statsText.Text = "🔒 Admins: 0 | 📡 Alerts: 0 | 🙈 Auto-Hides: 0"
-    statsText.TextColor3 = GUIStyles.Colors.Text
-    statsText.TextScaled = true
 
     return {
         frame = SecurityFrame,
@@ -649,25 +705,25 @@ end
 function GUIHandler.updateToggleButton(button, toggleBg, state, indicator, statusText)
     local TweenService = game:GetService("TweenService")
     
-    -- Animate toggle background color
+    -- Animate toggle background color (iOS style)
     local bgColorTween = TweenService:Create(
         toggleBg,
         TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-        {BackgroundColor3 = state and GUIStyles.Colors.Success or GUIStyles.Colors.Dark}
+        {BackgroundColor3 = state and GUIStyles.Colors.ToggleOn or GUIStyles.Colors.ToggleOff}
     )
     bgColorTween:Play()
     
-    -- Animate indicator position
+    -- Animate indicator position (iOS toggle style)
     if indicator then
         local indicatorTween = TweenService:Create(
             indicator,
-            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
-            {Position = state and UDim2.new(0.55, 0, 0.1, 0) or UDim2.new(0.05, 0, 0.1, 0)}
+            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {Position = state and UDim2.new(1, -30, 0, 2) or UDim2.new(0, 2, 0, 2)}
         )
         indicatorTween:Play()
     end
     
-    -- Update status text with animation
+    -- Update status text with animation (hidden for clean design)
     if statusText then
         statusText.Text = state and "ON" or "OFF"
         local textColorTween = TweenService:Create(
