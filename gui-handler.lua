@@ -538,114 +538,151 @@ end
 -- ===================================================================
 
 function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings, connections, callbacks)
+    print("🔧 Setting up GUI Handler event handlers...")
+    
     -- Security Panel Event Handlers
-    connections[#connections + 1] = guiComponents.security.adminButton.MouseButton1Click:Connect(function()
-        SecuritySettings.AdminDetection = not SecuritySettings.AdminDetection
-        GUIHandler.updateToggleButton(guiComponents.security.adminButton, guiComponents.security.adminIndicator, SecuritySettings.AdminDetection)
-        if callbacks and callbacks.createNotification then
-            callbacks.createNotification(SecuritySettings.AdminDetection and "🔒 Admin Detection enabled!" or "🔒 Admin Detection disabled!", SecuritySettings.AdminDetection and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
-        end
-    end)
+    if guiComponents.security and guiComponents.security.adminButton then
+        connections[#connections + 1] = guiComponents.security.adminButton.MouseButton1Click:Connect(function()
+            print("🔒 Admin Detection button clicked!")
+            SecuritySettings.AdminDetection = not SecuritySettings.AdminDetection
+            GUIHandler.updateToggleButton(guiComponents.security.adminButton, guiComponents.security.adminIndicator, SecuritySettings.AdminDetection)
+            if callbacks and callbacks.createNotification then
+                callbacks.createNotification(SecuritySettings.AdminDetection and "🔒 Admin Detection enabled!" or "🔒 Admin Detection disabled!", SecuritySettings.AdminDetection and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
+            end
+        end)
+        print("✅ Admin Detection button connected")
+    end
 
-    connections[#connections + 1] = guiComponents.security.proximityButton.MouseButton1Click:Connect(function()
-        SecuritySettings.PlayerProximityAlert = not SecuritySettings.PlayerProximityAlert
-        GUIHandler.updateToggleButton(guiComponents.security.proximityButton, guiComponents.security.proximityIndicator, SecuritySettings.PlayerProximityAlert)
-        if callbacks and callbacks.createNotification then
-            callbacks.createNotification(SecuritySettings.PlayerProximityAlert and "📡 Proximity Alert enabled!" or "📡 Proximity Alert disabled!", SecuritySettings.PlayerProximityAlert and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
-        end
-    end)
+    if guiComponents.security and guiComponents.security.proximityButton then
+        connections[#connections + 1] = guiComponents.security.proximityButton.MouseButton1Click:Connect(function()
+            print("📡 Proximity Alert button clicked!")
+            SecuritySettings.PlayerProximityAlert = not SecuritySettings.PlayerProximityAlert
+            GUIHandler.updateToggleButton(guiComponents.security.proximityButton, guiComponents.security.proximityIndicator, SecuritySettings.PlayerProximityAlert)
+            if callbacks and callbacks.createNotification then
+                callbacks.createNotification(SecuritySettings.PlayerProximityAlert and "📡 Proximity Alert enabled!" or "📡 Proximity Alert disabled!", SecuritySettings.PlayerProximityAlert and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
+            end
+        end)
+        print("✅ Proximity Alert button connected")
+    end
 
-    connections[#connections + 1] = guiComponents.security.autoHideButton.MouseButton1Click:Connect(function()
-        SecuritySettings.AutoHideOnAdmin = not SecuritySettings.AutoHideOnAdmin
-        GUIHandler.updateToggleButton(guiComponents.security.autoHideButton, guiComponents.security.autoHideIndicator, SecuritySettings.AutoHideOnAdmin)
-        if callbacks and callbacks.createNotification then
-            callbacks.createNotification(SecuritySettings.AutoHideOnAdmin and "🙈 Auto Hide enabled!" or "🙈 Auto Hide disabled!", SecuritySettings.AutoHideOnAdmin and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
-        end
-    end)
+    if guiComponents.security and guiComponents.security.autoHideButton then
+        connections[#connections + 1] = guiComponents.security.autoHideButton.MouseButton1Click:Connect(function()
+            print("🙈 Auto Hide button clicked!")
+            SecuritySettings.AutoHideOnAdmin = not SecuritySettings.AutoHideOnAdmin
+            GUIHandler.updateToggleButton(guiComponents.security.autoHideButton, guiComponents.security.autoHideIndicator, SecuritySettings.AutoHideOnAdmin)
+            if callbacks and callbacks.createNotification then
+                callbacks.createNotification(SecuritySettings.AutoHideOnAdmin and "🙈 Auto Hide enabled!" or "🙈 Auto Hide disabled!", SecuritySettings.AutoHideOnAdmin and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
+            end
+        end)
+        print("✅ Auto Hide button connected")
+    end
 
     -- Advanced Panel Event Handlers
-    connections[#connections + 1] = guiComponents.advanced.luckButton.MouseButton1Click:Connect(function()
-        Settings.LuckBoost = not Settings.LuckBoost
-        GUIHandler.updateToggleButton(guiComponents.advanced.luckButton, guiComponents.advanced.luckIndicator, Settings.LuckBoost)
-        if callbacks and callbacks.createNotification then
-            callbacks.createNotification(Settings.LuckBoost and "🍀 Luck Boost enabled!" or "🍀 Luck Boost disabled!", Settings.LuckBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
-        end
-    end)
+    if guiComponents.advanced and guiComponents.advanced.luckButton then
+        connections[#connections + 1] = guiComponents.advanced.luckButton.MouseButton1Click:Connect(function()
+            print("🍀 Luck Boost button clicked!")
+            Settings.LuckBoost = not Settings.LuckBoost
+            GUIHandler.updateToggleButton(guiComponents.advanced.luckButton, guiComponents.advanced.luckIndicator, Settings.LuckBoost)
+            if callbacks and callbacks.createNotification then
+                callbacks.createNotification(Settings.LuckBoost and "🍀 Luck Boost enabled!" or "🍀 Luck Boost disabled!", Settings.LuckBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
+            end
+        end)
+        print("✅ Luck Boost button connected")
+    end
 
-    connections[#connections + 1] = guiComponents.advanced.weatherButton.MouseButton1Click:Connect(function()
-        Settings.WeatherBoost = not Settings.WeatherBoost
-        GUIHandler.updateToggleButton(guiComponents.advanced.weatherButton, guiComponents.advanced.weatherIndicator, Settings.WeatherBoost)
-        if callbacks and callbacks.createNotification then
-            callbacks.createNotification(Settings.WeatherBoost and "🌦️ Weather Boost enabled!" or "🌦️ Weather Boost disabled!", Settings.WeatherBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
-        end
-    end)
+    if guiComponents.advanced and guiComponents.advanced.weatherButton then
+        connections[#connections + 1] = guiComponents.advanced.weatherButton.MouseButton1Click:Connect(function()
+            print("🌦️ Weather Boost button clicked!")
+            Settings.WeatherBoost = not Settings.WeatherBoost
+            GUIHandler.updateToggleButton(guiComponents.advanced.weatherButton, guiComponents.advanced.weatherIndicator, Settings.WeatherBoost)
+            if callbacks and callbacks.createNotification then
+                callbacks.createNotification(Settings.WeatherBoost and "🌦️ Weather Boost enabled!" or "🌦️ Weather Boost disabled!", Settings.WeatherBoost and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
+            end
+        end)
+        print("✅ Weather Boost button connected")
+    end
 
-    connections[#connections + 1] = guiComponents.advanced.smartButton.MouseButton1Click:Connect(function()
-        Settings.SmartFishing = not Settings.SmartFishing
-        GUIHandler.updateToggleButton(guiComponents.advanced.smartButton, guiComponents.advanced.smartIndicator, Settings.SmartFishing)
-        if callbacks and callbacks.createNotification then
-            callbacks.createNotification(Settings.SmartFishing and "🧠 Smart Fishing enabled!" or "🧠 Smart Fishing disabled!", Settings.SmartFishing and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
-        end
-    end)
+    if guiComponents.advanced and guiComponents.advanced.smartButton then
+        connections[#connections + 1] = guiComponents.advanced.smartButton.MouseButton1Click:Connect(function()
+            print("🧠 Smart Fishing button clicked!")
+            Settings.SmartFishing = not Settings.SmartFishing
+            GUIHandler.updateToggleButton(guiComponents.advanced.smartButton, guiComponents.advanced.smartIndicator, Settings.SmartFishing)
+            if callbacks and callbacks.createNotification then
+                callbacks.createNotification(Settings.SmartFishing and "🧠 Smart Fishing enabled!" or "🧠 Smart Fishing disabled!", Settings.SmartFishing and GUIStyles.Colors.Success or GUIStyles.Colors.Danger)
+            end
+        end)
+        print("✅ Smart Fishing button connected")
+    end
 
     -- Fish Value TextBox Handler
-    connections[#connections + 1] = guiComponents.advanced.fishValueTextBox.FocusLost:Connect(function(enterPressed)
-        if enterPressed then
-            local value = tonumber(guiComponents.advanced.fishValueTextBox.Text)
-            if value and value >= 10 and value <= 1000 then
-                Settings.MinFishValue = value
-                Settings.FishValueFilter = true
-                if callbacks and callbacks.createNotification then
-                    callbacks.createNotification("💎 Min Fish Value set to ₡" .. value, GUIStyles.Colors.Primary)
+    if guiComponents.advanced and guiComponents.advanced.fishValueTextBox then
+        connections[#connections + 1] = guiComponents.advanced.fishValueTextBox.FocusLost:Connect(function(enterPressed)
+            if enterPressed then
+                local value = tonumber(guiComponents.advanced.fishValueTextBox.Text)
+                if value and value >= 10 and value <= 1000 then
+                    Settings.MinFishValue = value
+                    Settings.FishValueFilter = true
+                    if callbacks and callbacks.createNotification then
+                        callbacks.createNotification("💎 Min Fish Value set to ₡" .. value, GUIStyles.Colors.Primary)
+                    end
+                    guiComponents.advanced.fishValueTextBox.Text = ""
+                else
+                    if callbacks and callbacks.createNotification then
+                        callbacks.createNotification("❌ Invalid value! Use 10-1000", GUIStyles.Colors.Danger)
+                    end
+                    guiComponents.advanced.fishValueTextBox.Text = ""
                 end
-                guiComponents.advanced.fishValueTextBox.Text = ""
-            else
-                if callbacks and callbacks.createNotification then
-                    callbacks.createNotification("❌ Invalid value! Use 10-1000", GUIStyles.Colors.Danger)
-                end
-                guiComponents.advanced.fishValueTextBox.Text = ""
             end
-        end
-    end)
+        end)
+        print("✅ Fish Value TextBox connected")
+    end
 
     -- Floating Button Event Handlers
-    local isHidden = false
-    connections[#connections + 1] = guiComponents.floating.clickButton.MouseButton1Click:Connect(function()
-        isHidden = not isHidden
-        
-        -- Hide/show all panels
-        if guiComponents.security.frame.Parent then
-            guiComponents.security.frame.Parent.Visible = not isHidden
-        end
-        
-        if isHidden then
-            guiComponents.floating.text.Text = "👁️"
-            guiComponents.floating.button.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
-            if callbacks and callbacks.createNotification then
-                callbacks.createNotification("📦 GUI Hidden - Click to show", GUIStyles.Colors.Warning)
+    if guiComponents.floating and guiComponents.floating.clickButton then
+        local isHidden = false
+        connections[#connections + 1] = guiComponents.floating.clickButton.MouseButton1Click:Connect(function()
+            print("🎣 Floating button clicked!")
+            isHidden = not isHidden
+            
+            -- Hide/show all panels
+            if guiComponents.security.frame.Parent then
+                guiComponents.security.frame.Parent.Visible = not isHidden
             end
-        else
-            guiComponents.floating.text.Text = "🎣"
-            guiComponents.floating.button.BackgroundColor3 = GUIStyles.Colors.Primary
-            if callbacks and callbacks.createNotification then
-                callbacks.createNotification("📦 GUI Shown", GUIStyles.Colors.Success)
+            
+            if isHidden then
+                guiComponents.floating.text.Text = "👁️"
+                guiComponents.floating.button.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+                if callbacks and callbacks.createNotification then
+                    callbacks.createNotification("📦 GUI Hidden - Click to show", GUIStyles.Colors.Warning)
+                end
+            else
+                guiComponents.floating.text.Text = "🎣"
+                guiComponents.floating.button.BackgroundColor3 = GUIStyles.Colors.Primary
+                if callbacks and callbacks.createNotification then
+                    callbacks.createNotification("📦 GUI Shown", GUIStyles.Colors.Success)
+                end
             end
-        end
-    end)
+        end)
+        print("✅ Floating button connected")
+    end
 
     -- Floating Button Hover Effects
-    connections[#connections + 1] = guiComponents.floating.button.MouseEnter:Connect(function()
-        guiComponents.floating.tooltip.Visible = true
-        guiComponents.floating.tooltip:TweenPosition(
-            UDim2.new(0, 95, 0.5, -15),
-            "Out", "Quad", 0.2, true
-        )
-    end)
+    if guiComponents.floating and guiComponents.floating.button then
+        connections[#connections + 1] = guiComponents.floating.button.MouseEnter:Connect(function()
+            guiComponents.floating.tooltip.Visible = true
+            guiComponents.floating.tooltip:TweenPosition(
+                UDim2.new(0, 95, 0.5, -15),
+                "Out", "Quad", 0.2, true
+            )
+        end)
 
-    connections[#connections + 1] = guiComponents.floating.button.MouseLeave:Connect(function()
-        guiComponents.floating.tooltip.Visible = false
-    end)
+        connections[#connections + 1] = guiComponents.floating.button.MouseLeave:Connect(function()
+            guiComponents.floating.tooltip.Visible = false
+        end)
+        print("✅ Floating button hover effects connected")
+    end
 
+    print("🎉 All GUI Handler event handlers setup complete!")
     return connections
 end
 
