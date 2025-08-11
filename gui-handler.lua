@@ -11,20 +11,25 @@ local GUIHandler = {}
 
 local GUIStyles = {
     Colors = {
-        Background = Color3.fromRGB(47, 47, 47),
-        Primary = Color3.fromRGB(0, 162, 255),
-        Success = Color3.fromRGB(0, 255, 0),
-        Danger = Color3.fromRGB(255, 0, 0),
-        Warning = Color3.fromRGB(255, 165, 0),
-        Text = Color3.fromRGB(255, 255, 255),
-        Black = Color3.fromRGB(0, 0, 0),
-        Purple = Color3.fromRGB(255, 0, 255),
-        Dark = Color3.fromRGB(128, 0, 128)
+        Background = Color3.fromRGB(30, 30, 35),        -- Darker background
+        Primary = Color3.fromRGB(64, 156, 255),         -- Modern blue
+        Secondary = Color3.fromRGB(128, 90, 213),       -- Purple accent
+        Success = Color3.fromRGB(34, 197, 94),          -- Green success
+        Danger = Color3.fromRGB(239, 68, 68),           -- Red danger
+        Warning = Color3.fromRGB(245, 158, 11),         -- Orange warning
+        Text = Color3.fromRGB(248, 250, 252),           -- Light text
+        TextSecondary = Color3.fromRGB(148, 163, 184),  -- Gray text
+        Black = Color3.fromRGB(15, 15, 20),             -- True black
+        Purple = Color3.fromRGB(147, 51, 234),          -- Accent purple
+        Dark = Color3.fromRGB(51, 65, 85),              -- Dark gray
+        Border = Color3.fromRGB(71, 85, 105),           -- Border color
+        Hover = Color3.fromRGB(45, 45, 55)              -- Hover state
     },
     
     Fonts = {
-        Primary = Enum.Font.SourceSansBold,
-        Title = Enum.Font.GothamBold
+        Primary = Enum.Font.GothamSemibold,
+        Title = Enum.Font.GothamBold,
+        Body = Enum.Font.Gotham
     },
     
     Sizes = {
@@ -38,6 +43,21 @@ local GUIStyles = {
         ButtonText = UDim2.new(0.030, 0, 0.216, 0),
         ToggleButton = UDim2.new(0.738, 0, 0.108, 0),
         Indicator = UDim2.new(0.719, 0, 0.135, 0)
+    },
+    
+    -- New: Animation settings
+    Animations = {
+        Fast = 0.15,
+        Normal = 0.3,
+        Slow = 0.5
+    },
+    
+    -- New: Border radius settings
+    BorderRadius = {
+        Small = 6,
+        Medium = 8,
+        Large = 12,
+        XLarge = 16
     }
 }
 
@@ -47,9 +67,47 @@ local GUIStyles = {
 
 local function createUICorner(parent, radius)
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, radius or 0)
+    corner.CornerRadius = UDim.new(0, radius or GUIStyles.BorderRadius.Medium)
     corner.Parent = parent
     return corner
+end
+
+local function createGradient(parent, color1, color2, rotation)
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new{
+        ColorSequenceKeypoint.new(0, color1),
+        ColorSequenceKeypoint.new(1, color2)
+    }
+    gradient.Rotation = rotation or 90
+    gradient.Parent = parent
+    return gradient
+end
+
+local function createShadow(parent, element)
+    local shadow = Instance.new("Frame")
+    shadow.Name = element.Name .. "Shadow"
+    shadow.Parent = parent
+    shadow.BackgroundColor3 = GUIStyles.Colors.Black
+    shadow.BackgroundTransparency = 0.8
+    shadow.BorderSizePixel = 0
+    shadow.Position = UDim2.new(
+        element.Position.X.Scale, element.Position.X.Offset + 2,
+        element.Position.Y.Scale, element.Position.Y.Offset + 2
+    )
+    shadow.Size = element.Size
+    shadow.ZIndex = element.ZIndex - 1
+    
+    createUICorner(shadow, GUIStyles.BorderRadius.Medium)
+    return shadow
+end
+
+local function createBorder(parent, thickness, color)
+    local border = Instance.new("UIStroke")
+    border.Thickness = thickness or 1
+    border.Color = color or GUIStyles.Colors.Border
+    border.Transparency = 0.3
+    border.Parent = parent
+    return border
 end
 
 local function createStyledFrame(parent, name, size, position, backgroundColor)
@@ -68,41 +126,68 @@ local function createStyledFrame(parent, name, size, position, backgroundColor)
 end
 
 local function createToggleSystem(parent, labelText, settingValue)
-    -- Create label
+    -- Create main container with better styling
+    local container = Instance.new("Frame")
+    container.Parent = parent
+    container.BackgroundTransparency = 1
+    container.Size = UDim2.new(1, 0, 1, 0)
+    
+    -- Create label with better typography
     local label = Instance.new("TextLabel")
-    label.Parent = parent
+    label.Parent = container
     label.BackgroundTransparency = 1
-    label.Position = GUIStyles.Positions.ButtonText
-    label.Size = UDim2.new(0.415, 0, 0.568, 0)
+    label.Position = UDim2.new(0.030, 0, 0, 0)
+    label.Size = UDim2.new(0.600, 0, 1, 0)
     label.Font = GUIStyles.Fonts.Primary
     label.Text = labelText
     label.TextColor3 = GUIStyles.Colors.Text
     label.TextScaled = true
     label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextYAlignment = Enum.TextYAlignment.Center
     
-    -- Create button
+    -- Create modern toggle switch background
+    local toggleBg = Instance.new("Frame")
+    toggleBg.Parent = container
+    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.Dark
+    toggleBg.BorderSizePixel = 0
+    toggleBg.Position = UDim2.new(0.700, 0, 0.2, 0)
+    toggleBg.Size = UDim2.new(0.15, 0, 0.6, 0)
+    
+    createUICorner(toggleBg, GUIStyles.BorderRadius.XLarge)
+    createBorder(toggleBg, 2, settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.Border)
+    
+    -- Create toggle circle/indicator
+    local indicator = Instance.new("Frame")
+    indicator.Parent = toggleBg
+    indicator.BackgroundColor3 = GUIStyles.Colors.Text
+    indicator.BorderSizePixel = 0
+    indicator.Position = settingValue and UDim2.new(0.55, 0, 0.1, 0) or UDim2.new(0.05, 0, 0.1, 0)
+    indicator.Size = UDim2.new(0.4, 0, 0.8, 0)
+    
+    createUICorner(indicator, GUIStyles.BorderRadius.XLarge)
+    
+    -- Create invisible button for clicking
     local button = Instance.new("TextButton")
-    button.Parent = parent
+    button.Parent = container
     button.BackgroundTransparency = 1
-    button.Position = GUIStyles.Positions.ToggleButton
-    button.Size = GUIStyles.Sizes.ToggleButton
+    button.Size = UDim2.new(1, 0, 1, 0)
     button.ZIndex = 2
     button.Font = GUIStyles.Fonts.Primary
-    button.Text = settingValue and "ON" or "OFF"
-    button.TextColor3 = GUIStyles.Colors.Text
-    button.TextScaled = true
+    button.Text = ""
     
-    -- Create indicator
-    local indicator = Instance.new("Frame")
-    indicator.Parent = parent
-    indicator.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.Black
-    indicator.BorderSizePixel = 0
-    indicator.Position = GUIStyles.Positions.Indicator
-    indicator.Size = GUIStyles.Sizes.Indicator
+    -- Create status text
+    local statusText = Instance.new("TextLabel")
+    statusText.Parent = container
+    statusText.BackgroundTransparency = 1
+    statusText.Position = UDim2.new(0.870, 0, 0, 0)
+    statusText.Size = UDim2.new(0.100, 0, 1, 0)
+    statusText.Font = GUIStyles.Fonts.Body
+    statusText.Text = settingValue and "ON" or "OFF"
+    statusText.TextColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary
+    statusText.TextScaled = true
+    statusText.TextXAlignment = Enum.TextXAlignment.Center
     
-    createUICorner(indicator)
-    
-    return button, indicator, label
+    return button, toggleBg, label, indicator, statusText
 end
 
 -- ===================================================================
@@ -354,39 +439,53 @@ function GUIHandler.createBoatPanel(parent)
 end
 
 function GUIHandler.createFloatingButton(parent)
-    -- Create enhanced floating toggle button
+    -- Create enhanced floating toggle button with modern design
     local FloatingButton = Instance.new("Frame")
     FloatingButton.Name = "FloatingButton"
     FloatingButton.Parent = parent
     FloatingButton.BackgroundColor3 = GUIStyles.Colors.Primary
-    FloatingButton.BackgroundTransparency = 0.2
+    FloatingButton.BackgroundTransparency = 0.1
     FloatingButton.BorderSizePixel = 0
-    FloatingButton.Position = UDim2.new(0, 20, 0.5, -30)
-    FloatingButton.Size = GUIStyles.Sizes.FloatingButton
+    FloatingButton.Position = UDim2.new(0, 20, 0.5, -35)
+    FloatingButton.Size = UDim2.new(0, 70, 0, 70)
     FloatingButton.ZIndex = 100
     FloatingButton.Active = true
     
-    createUICorner(FloatingButton, 30)
+    createUICorner(FloatingButton, GUIStyles.BorderRadius.XLarge)
+    createBorder(FloatingButton, 2, GUIStyles.Colors.Primary)
+    createGradient(FloatingButton, GUIStyles.Colors.Primary, GUIStyles.Colors.Secondary, 45)
     
-    -- Add shadow effect
-    local FloatingShadow = Instance.new("Frame")
-    FloatingShadow.Name = "FloatingShadow"
-    FloatingShadow.Parent = parent
-    FloatingShadow.BackgroundColor3 = GUIStyles.Colors.Black
-    FloatingShadow.BackgroundTransparency = 0.7
-    FloatingShadow.BorderSizePixel = 0
-    FloatingShadow.Position = UDim2.new(0, 22, 0.5, -28)
-    FloatingShadow.Size = GUIStyles.Sizes.FloatingButton
-    FloatingShadow.ZIndex = 99
+    -- Add multiple shadow layers for depth
+    local FloatingShadow1 = Instance.new("Frame")
+    FloatingShadow1.Name = "FloatingShadow1"
+    FloatingShadow1.Parent = parent
+    FloatingShadow1.BackgroundColor3 = GUIStyles.Colors.Black
+    FloatingShadow1.BackgroundTransparency = 0.7
+    FloatingShadow1.BorderSizePixel = 0
+    FloatingShadow1.Position = UDim2.new(0, 24, 0.5, -31)
+    FloatingShadow1.Size = UDim2.new(0, 70, 0, 70)
+    FloatingShadow1.ZIndex = 98
+    createUICorner(FloatingShadow1, GUIStyles.BorderRadius.XLarge)
     
-    createUICorner(FloatingShadow, 30)
+    local FloatingShadow2 = Instance.new("Frame")
+    FloatingShadow2.Name = "FloatingShadow2"
+    FloatingShadow2.Parent = parent
+    FloatingShadow2.BackgroundColor3 = GUIStyles.Colors.Black
+    FloatingShadow2.BackgroundTransparency = 0.9
+    FloatingShadow2.BorderSizePixel = 0
+    FloatingShadow2.Position = UDim2.new(0, 26, 0.5, -29)
+    FloatingShadow2.Size = UDim2.new(0, 70, 0, 70)
+    FloatingShadow2.ZIndex = 97
+    createUICorner(FloatingShadow2, GUIStyles.BorderRadius.XLarge)
     
+    -- Enhanced icon with better positioning
     local FloatingButtonText = Instance.new("TextLabel")
     FloatingButtonText.Name = "FloatingButtonText"
     FloatingButtonText.Parent = FloatingButton
     FloatingButtonText.BackgroundTransparency = 1
-    FloatingButtonText.Size = UDim2.new(1, 0, 1, 0)
-    FloatingButtonText.Font = GUIStyles.Fonts.Primary
+    FloatingButtonText.Size = UDim2.new(0.8, 0, 0.8, 0)
+    FloatingButtonText.Position = UDim2.new(0.1, 0, 0.1, 0)
+    FloatingButtonText.Font = GUIStyles.Fonts.Title
     FloatingButtonText.Text = "🎣"
     FloatingButtonText.TextColor3 = GUIStyles.Colors.Text
     FloatingButtonText.TextScaled = true
@@ -400,37 +499,53 @@ function GUIHandler.createFloatingButton(parent)
     FloatingButtonClick.Text = ""
     FloatingButtonClick.ZIndex = 102
     
-    -- Add tooltip for floating button
+    -- Enhanced tooltip with modern styling
     local FloatingTooltip = Instance.new("Frame")
     FloatingTooltip.Name = "FloatingTooltip"
     FloatingTooltip.Parent = parent
-    FloatingTooltip.BackgroundColor3 = GUIStyles.Colors.Black
-    FloatingTooltip.BackgroundTransparency = 0.2
+    FloatingTooltip.BackgroundColor3 = GUIStyles.Colors.Background
+    FloatingTooltip.BackgroundTransparency = 0.1
     FloatingTooltip.BorderSizePixel = 0
-    FloatingTooltip.Position = UDim2.new(0, 90, 0.5, -15)
-    FloatingTooltip.Size = UDim2.new(0, 120, 0, 30)
+    FloatingTooltip.Position = UDim2.new(0, 100, 0.5, -20)
+    FloatingTooltip.Size = UDim2.new(0, 140, 0, 40)
     FloatingTooltip.ZIndex = 105
     FloatingTooltip.Visible = false
     
-    createUICorner(FloatingTooltip, 5)
+    createUICorner(FloatingTooltip, GUIStyles.BorderRadius.Medium)
+    createBorder(FloatingTooltip, 1, GUIStyles.Colors.Border)
+    
+    -- Add subtle shadow to tooltip
+    local TooltipShadow = Instance.new("Frame")
+    TooltipShadow.Name = "TooltipShadow"
+    TooltipShadow.Parent = parent
+    TooltipShadow.BackgroundColor3 = GUIStyles.Colors.Black
+    TooltipShadow.BackgroundTransparency = 0.8
+    TooltipShadow.BorderSizePixel = 0
+    TooltipShadow.Position = UDim2.new(0, 102, 0.5, -18)
+    TooltipShadow.Size = UDim2.new(0, 140, 0, 40)
+    TooltipShadow.ZIndex = 104
+    TooltipShadow.Visible = false
+    createUICorner(TooltipShadow, GUIStyles.BorderRadius.Medium)
     
     local FloatingTooltipText = Instance.new("TextLabel")
     FloatingTooltipText.Name = "FloatingTooltipText"
     FloatingTooltipText.Parent = FloatingTooltip
     FloatingTooltipText.BackgroundTransparency = 1
     FloatingTooltipText.Size = UDim2.new(1, 0, 1, 0)
-    FloatingTooltipText.Font = GUIStyles.Fonts.Primary
-    FloatingTooltipText.Text = "Click to toggle GUI"
+    FloatingTooltipText.Font = GUIStyles.Fonts.Body
+    FloatingTooltipText.Text = "🎯 Toggle GUI Panel"
     FloatingTooltipText.TextColor3 = GUIStyles.Colors.Text
     FloatingTooltipText.TextScaled = true
     FloatingTooltipText.ZIndex = 106
 
     return {
         button = FloatingButton,
-        shadow = FloatingShadow,
+        shadow1 = FloatingShadow1,
+        shadow2 = FloatingShadow2,
         text = FloatingButtonText,
         clickButton = FloatingButtonClick,
         tooltip = FloatingTooltip,
+        tooltipShadow = TooltipShadow,
         tooltipText = FloatingTooltipText
     }
 end
@@ -453,14 +568,59 @@ end
 function GUIHandler.addHoverEffect(element, hoverSize, normalSize, duration)
     local TweenService = game:GetService("TweenService")
     
+    local hoverTweenInfo = TweenInfo.new(
+        duration or GUIStyles.Animations.Fast, 
+        Enum.EasingStyle.Back, 
+        Enum.EasingDirection.Out
+    )
+    
+    local normalTweenInfo = TweenInfo.new(
+        duration or GUIStyles.Animations.Fast, 
+        Enum.EasingStyle.Quad, 
+        Enum.EasingDirection.Out
+    )
+    
     element.MouseEnter:Connect(function()
-        element:TweenSize(hoverSize, "Out", "Quad", duration or 0.2, true)
-        element.BackgroundTransparency = 0.1
+        -- Size animation
+        element:TweenSize(hoverSize, "Out", "Back", duration or GUIStyles.Animations.Fast, true)
+        
+        -- Color/transparency animations
+        if element.BackgroundTransparency then
+            local hoverTween = TweenService:Create(element, hoverTweenInfo, {
+                BackgroundTransparency = 0.05,
+                BackgroundColor3 = element.BackgroundColor3:lerp(GUIStyles.Colors.Text, 0.1)
+            })
+            hoverTween:Play()
+        end
+        
+        -- Add subtle glow effect
+        if element:FindFirstChild("UIStroke") then
+            local strokeTween = TweenService:Create(element.UIStroke, hoverTweenInfo, {
+                Transparency = 0.1,
+                Thickness = 2
+            })
+            strokeTween:Play()
+        end
     end)
     
     element.MouseLeave:Connect(function()
-        element:TweenSize(normalSize, "Out", "Quad", duration or 0.2, true)
-        element.BackgroundTransparency = 0.2
+        -- Return to normal
+        element:TweenSize(normalSize, "Out", "Quad", duration or GUIStyles.Animations.Fast, true)
+        
+        if element.BackgroundTransparency then
+            local normalTween = TweenService:Create(element, normalTweenInfo, {
+                BackgroundTransparency = 0.1
+            })
+            normalTween:Play()
+        end
+        
+        if element:FindFirstChild("UIStroke") then
+            local strokeTween = TweenService:Create(element.UIStroke, normalTweenInfo, {
+                Transparency = 0.3,
+                Thickness = 1
+            })
+            strokeTween:Play()
+        end
     end)
 end
 
@@ -468,9 +628,47 @@ end
 --                         UPDATE FUNCTIONS
 -- ===================================================================
 
-function GUIHandler.updateToggleButton(button, indicator, state)
-    button.Text = state and "ON" or "OFF"
-    indicator.BackgroundColor3 = state and GUIStyles.Colors.Success or GUIStyles.Colors.Black
+function GUIHandler.updateToggleButton(button, toggleBg, state, indicator, statusText)
+    local TweenService = game:GetService("TweenService")
+    
+    -- Animate toggle background color
+    local bgColorTween = TweenService:Create(
+        toggleBg,
+        TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {BackgroundColor3 = state and GUIStyles.Colors.Success or GUIStyles.Colors.Dark}
+    )
+    bgColorTween:Play()
+    
+    -- Animate indicator position
+    if indicator then
+        local indicatorTween = TweenService:Create(
+            indicator,
+            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+            {Position = state and UDim2.new(0.55, 0, 0.1, 0) or UDim2.new(0.05, 0, 0.1, 0)}
+        )
+        indicatorTween:Play()
+    end
+    
+    -- Update status text with animation
+    if statusText then
+        statusText.Text = state and "ON" or "OFF"
+        local textColorTween = TweenService:Create(
+            statusText,
+            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {TextColor3 = state and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary}
+        )
+        textColorTween:Play()
+    end
+    
+    -- Update border color
+    if toggleBg:FindFirstChild("UIStroke") then
+        local borderTween = TweenService:Create(
+            toggleBg.UIStroke,
+            TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+            {Color = state and GUIStyles.Colors.Success or GUIStyles.Colors.Border}
+        )
+        borderTween:Play()
+    end
 end
 
 function GUIHandler.updateStatsText(textLabel, stats)
@@ -487,21 +685,34 @@ end
 --                         DRAG FUNCTIONALITY
 -- ===================================================================
 
-function GUIHandler.makeDraggable(element, shadowElement)
+function GUIHandler.makeDraggable(element, shadowElement1, shadowElement2)
     local UserInputService = game:GetService("UserInputService")
+    local TweenService = game:GetService("TweenService")
     local dragging = false
     local dragStart = nil
     local startPos = nil
-    local shadowStartPos = nil
+    local shadow1StartPos = nil
+    local shadow2StartPos = nil
     
     element.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
             startPos = element.Position
-            if shadowElement then
-                shadowStartPos = shadowElement.Position
+            if shadowElement1 then
+                shadow1StartPos = shadowElement1.Position
             end
+            if shadowElement2 then
+                shadow2StartPos = shadowElement2.Position
+            end
+            
+            -- Visual feedback when dragging starts
+            local dragTween = TweenService:Create(
+                element,
+                TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Back, Enum.EasingDirection.Out),
+                {Size = UDim2.new(0, 75, 0, 75), BackgroundTransparency = 0.3}
+            )
+            dragTween:Play()
         end
     end)
     
@@ -515,12 +726,21 @@ function GUIHandler.makeDraggable(element, shadowElement)
                 startPos.Y.Offset + delta.Y
             )
             
-            if shadowElement and shadowStartPos then
-                shadowElement.Position = UDim2.new(
-                    shadowStartPos.X.Scale,
-                    shadowStartPos.X.Offset + delta.X,
-                    shadowStartPos.Y.Scale,
-                    shadowStartPos.Y.Offset + delta.Y
+            if shadowElement1 and shadow1StartPos then
+                shadowElement1.Position = UDim2.new(
+                    shadow1StartPos.X.Scale,
+                    shadow1StartPos.X.Offset + delta.X,
+                    shadow1StartPos.Y.Scale,
+                    shadow1StartPos.Y.Offset + delta.Y
+                )
+            end
+            
+            if shadowElement2 and shadow2StartPos then
+                shadowElement2.Position = UDim2.new(
+                    shadow2StartPos.X.Scale,
+                    shadow2StartPos.X.Offset + delta.X,
+                    shadow2StartPos.Y.Scale,
+                    shadow2StartPos.Y.Offset + delta.Y
                 )
             end
         end
@@ -529,6 +749,14 @@ function GUIHandler.makeDraggable(element, shadowElement)
     UserInputService.InputEnded:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = false
+            
+            -- Return to normal size and transparency
+            local returnTween = TweenService:Create(
+                element,
+                TweenInfo.new(GUIStyles.Animations.Fast, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+                {Size = UDim2.new(0, 70, 0, 70), BackgroundTransparency = 0.1}
+            )
+            returnTween:Play()
         end
     end)
 end
@@ -670,14 +898,35 @@ function GUIHandler.setupEventHandlers(guiComponents, SecuritySettings, Settings
     if guiComponents.floating and guiComponents.floating.button then
         connections[#connections + 1] = guiComponents.floating.button.MouseEnter:Connect(function()
             guiComponents.floating.tooltip.Visible = true
+            guiComponents.floating.tooltipShadow.Visible = true
+            
+            -- Animate tooltip appearance
+            local TweenService = game:GetService("TweenService")
             guiComponents.floating.tooltip:TweenPosition(
-                UDim2.new(0, 95, 0.5, -15),
-                "Out", "Quad", 0.2, true
+                UDim2.new(0, 105, 0.5, -20),
+                "Out", "Back", GUIStyles.Animations.Fast, true
+            )
+            guiComponents.floating.tooltipShadow:TweenPosition(
+                UDim2.new(0, 107, 0.5, -18),
+                "Out", "Back", GUIStyles.Animations.Fast, true
+            )
+            
+            -- Scale effect on button
+            guiComponents.floating.button:TweenSize(
+                UDim2.new(0, 75, 0, 75),
+                "Out", "Back", GUIStyles.Animations.Fast, true
             )
         end)
 
         connections[#connections + 1] = guiComponents.floating.button.MouseLeave:Connect(function()
             guiComponents.floating.tooltip.Visible = false
+            guiComponents.floating.tooltipShadow.Visible = false
+            
+            -- Return to normal size
+            guiComponents.floating.button:TweenSize(
+                UDim2.new(0, 70, 0, 70),
+                "Out", "Quad", GUIStyles.Animations.Fast, true
+            )
         end)
         print("✅ Floating button hover effects connected")
     end
@@ -728,16 +977,17 @@ function GUIHandler.createCompleteGUI(parent, SecuritySettings, Settings)
     -- Create Floating Button
     guiComponents.floating = GUIHandler.createFloatingButton(parent)
     
-    -- Add animations
-    GUIHandler.addPulseAnimation(guiComponents.floating.button)
+    -- Add animations and effects
+    GUIHandler.addPulseAnimation(guiComponents.floating.button, 2.5, 0.3)
     GUIHandler.addHoverEffect(
         guiComponents.floating.button, 
-        UDim2.new(0, 70, 0, 70), 
-        UDim2.new(0, 60, 0, 60)
+        UDim2.new(0, 75, 0, 75), 
+        UDim2.new(0, 70, 0, 70),
+        GUIStyles.Animations.Fast
     )
     
-    -- Make floating button draggable
-    GUIHandler.makeDraggable(guiComponents.floating.button, guiComponents.floating.shadow)
+    -- Make floating button draggable with enhanced shadows
+    GUIHandler.makeDraggable(guiComponents.floating.button, guiComponents.floating.shadow1, guiComponents.floating.shadow2)
     
     return guiComponents
 end
