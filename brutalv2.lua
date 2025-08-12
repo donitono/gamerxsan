@@ -1839,8 +1839,8 @@ local function createCompleteGUI()
     -- ===============================================================
     --                       LOAD GUI HANDLER MODULE
     -- ===============================================================
-    -- Load GUI Handler Module
-    local GUIHandler = loadstring(game:HttpGet("https://raw.githubusercontent.com/donitono/gamerxsan/refs/heads/main/gui-handler.lua"))()
+    -- Load GUI Handler Module from GitHub
+    local GUIHandler = loadstring(game:HttpGet("https://raw.githubusercontent.com/donitono/gamerxsan/main/gui-handler.lua", true))()
     
     -- Create GUI using the handler module
     local guiComponents = GUIHandler.createCompleteGUI(FrameUtama, SecuritySettings, Settings)
