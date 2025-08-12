@@ -376,24 +376,24 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     createBorder(container, 1, GUIStyles.Colors.BorderLight)
     createEnhancedShadow(parent, container, "ShadowLow")
     
-    -- Modern colored icon container on the left (compact size)
+    -- Modern colored icon container on the left (larger without text)
     local iconContainer = Instance.new("Frame")
     iconContainer.Parent = container
     iconContainer.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
     iconContainer.BackgroundTransparency = 0.15
     iconContainer.BorderSizePixel = 0
-    iconContainer.Position = UDim2.new(0, 8, 0.5, -8)    -- Smaller positioning
-    iconContainer.Size = UDim2.new(0, 16, 0, 16)         -- Much smaller icon
-    createUICorner(iconContainer, GUIStyles.BorderRadius.Small)
+    iconContainer.Position = UDim2.new(0, 15, 0.5, -15)   -- Centered larger positioning
+    iconContainer.Size = UDim2.new(0, 30, 0, 30)          -- Larger icon without text
+    createUICorner(iconContainer, GUIStyles.BorderRadius.Medium)
     
-    -- Add subtle glow to icon container (smaller)
+    -- Add subtle glow to icon container (larger)
     local iconGlow = Instance.new("Frame")
     iconGlow.Parent = container
     iconGlow.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
     iconGlow.BackgroundTransparency = 0.85
     iconGlow.BorderSizePixel = 0
-    iconGlow.Position = UDim2.new(0, 6, 0.5, -10)        -- Adjusted for smaller icon
-    iconGlow.Size = UDim2.new(0, 20, 0, 20)              -- Smaller glow
+    iconGlow.Position = UDim2.new(0, 12, 0.5, -18)        -- Adjusted for larger icon
+    iconGlow.Size = UDim2.new(0, 36, 0, 36)               -- Larger glow
     iconGlow.ZIndex = iconContainer.ZIndex - 1
     createUICorner(iconGlow, GUIStyles.BorderRadius.Large)
     
@@ -409,7 +409,7 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     iconText.TextScaled = true
     iconText.ZIndex = iconContainer.ZIndex + 1
     
-    -- Modern typography for label (compact like brutal.lua)
+    -- Modern typography for label (hidden for clean minimalist look)
     local label = Instance.new("TextLabel")
     label.Parent = container
     label.BackgroundTransparency = 1
@@ -421,6 +421,7 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     label.TextScaled = true                          -- Use TextScaled like brutal.lua
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
+    label.Visible = false                            -- Hide text for clean minimalist look
     
     -- Subtitle/description (hidden to keep it simple like brutal.lua)
     local subtitle = Instance.new("TextLabel")
@@ -520,20 +521,20 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
             Size = UDim2.new(1, 2, 1, 2)
         }):Play()
         
-        -- Icon glow effect (adjusted for smaller landscape icons)
+        -- Icon glow effect (adjusted for larger icons without text)
         TweenService:Create(iconGlow, hoverTweenInfo, {
             BackgroundTransparency = 0.75,
-            Size = UDim2.new(0, 32, 0, 32),  -- Adjusted for 28px base glow
-            Position = UDim2.new(0, 8, 0.5, -16)  -- Adjusted for smaller position
+            Size = UDim2.new(0, 42, 0, 42),  -- Adjusted for 36px base glow
+            Position = UDim2.new(0, 9, 0.5, -21)  -- Adjusted for larger position
         }):Play()
         
-        -- Icon scale (adjusted for smaller landscape icons)
+        -- Icon scale (adjusted for larger icons without text)
         TweenService:Create(iconContainer, hoverTweenInfo, {
-            Size = UDim2.new(0, 26, 0, 26),  -- Slightly larger from 24px base
-            Position = UDim2.new(0, 11, 0.5, -13)  -- Adjusted position
+            Size = UDim2.new(0, 35, 0, 35),  -- Slightly larger from 30px base
+            Position = UDim2.new(0, 12.5, 0.5, -17.5)  -- Adjusted position
         }):Play()
         
-        -- Label color enhancement
+        -- Label color enhancement (hidden but keep for compatibility)
         TweenService:Create(label, hoverTweenInfo, {
             TextColor3 = (iconData and iconData.accent) or GUIStyles.Colors.Primary
         }):Play()
@@ -554,13 +555,13 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
         
         TweenService:Create(iconGlow, hoverTweenInfo, {
             BackgroundTransparency = 0.85,
-            Size = UDim2.new(0, 28, 0, 28),  -- Return to landscape base size
-            Position = UDim2.new(0, 10, 0.5, -14)  -- Return to landscape base position
+            Size = UDim2.new(0, 36, 0, 36),  -- Return to larger base size
+            Position = UDim2.new(0, 12, 0.5, -18)  -- Return to larger base position
         }):Play()
         
         TweenService:Create(iconContainer, hoverTweenInfo, {
-            Size = UDim2.new(0, 24, 0, 24),  -- Return to landscape base size
-            Position = UDim2.new(0, 12, 0.5, -12)  -- Return to landscape base position
+            Size = UDim2.new(0, 30, 0, 30),  -- Return to larger base size
+            Position = UDim2.new(0, 15, 0.5, -15)  -- Return to larger base position
         }):Play()
         
         TweenService:Create(label, hoverTweenInfo, {
@@ -713,58 +714,94 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Padding = UDim.new(0, 8)  -- Same spacing as brutal.lua
     
-    -- Add grid layout for landscape optimization
-    local gridContainer = Instance.new("Frame")
-    gridContainer.Name = "GridContainer"
-    gridContainer.Parent = layoutFrame
-    gridContainer.BackgroundTransparency = 1
-    gridContainer.Size = UDim2.new(1, 0, 0, 58)  -- Single row with 3 columns
-    gridContainer.LayoutOrder = 1
-    
-    local gridLayout = Instance.new("UIGridLayout")
-    gridLayout.Parent = gridContainer
-    gridLayout.CellSize = UDim2.new(0.32, 0, 0, 50)  -- Three columns instead of two
-    gridLayout.CellPadding = UDim2.new(0.01, 0, 0, 4) -- Smaller gaps
-    gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
-    gridLayout.VerticalAlignment = Enum.VerticalAlignment.Top
-
-    -- Luck Boost Frame with modern design and colored icon (in grid)
-    local luckFrame = createStyledFrame(gridContainer, "LuckBoostFrame", UDim2.new(1, 0, 1, 0))
-    luckFrame.LayoutOrder = 1
+    -- Luck Boost Frame with modern design and colored icon (vertical list)
+    local luckFrame = createStyledFrame(layoutFrame, "LuckBoostFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    luckFrame.BackgroundTransparency = 1
     local luckButton, luckToggleBg, luckLabel, luckIndicator, luckSubtitle, luckIconContainer, luckStatusDot, luckIndicatorShadow = 
         createToggleSystem(luckFrame, "Luck Boost", false, GUIStyles.Icons.Luck)
     luckButton.Name = "LuckBoostButton"
     luckToggleBg.Name = "LuckBoostToggleBg"
     luckIndicator.Name = "LuckBoostIndicator"
 
-    -- Weather Boost Frame with modern design and colored icon (in grid)
-    local weatherFrame = createStyledFrame(gridContainer, "WeatherBoostFrame", UDim2.new(1, 0, 1, 0))
-    weatherFrame.LayoutOrder = 2
+    -- Weather Boost Frame with modern design and colored icon (vertical list)
+    local weatherFrame = createStyledFrame(layoutFrame, "WeatherBoostFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    weatherFrame.BackgroundTransparency = 1
     local weatherButton, weatherToggleBg, weatherLabel, weatherIndicator, weatherSubtitle, weatherIconContainer, weatherStatusDot, weatherIndicatorShadow = 
         createToggleSystem(weatherFrame, "Weather Boost", false, GUIStyles.Icons.Weather)
     weatherButton.Name = "WeatherBoostButton"
     weatherToggleBg.Name = "WeatherBoostToggleBg"
     weatherIndicator.Name = "WeatherBoostIndicator"
 
-    -- Smart Fishing Frame with modern design and colored icon (in grid)
-    local smartFrame = createStyledFrame(gridContainer, "SmartFishingFrame", UDim2.new(1, 0, 1, 0))
-    smartFrame.LayoutOrder = 3
+    -- Smart Fishing Frame with modern design and colored icon (vertical list)
+    local smartFrame = createStyledFrame(layoutFrame, "SmartFishingFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    smartFrame.BackgroundTransparency = 1
     local smartButton, smartToggleBg, smartLabel, smartIndicator, smartSubtitle, smartIconContainer, smartStatusDot, smartIndicatorShadow = 
         createToggleSystem(smartFrame, "Smart Fishing", false, GUIStyles.Icons.Smart)
     smartButton.Name = "SmartFishingButton"
     smartToggleBg.Name = "SmartFishingToggleBg"
     smartIndicator.Name = "SmartFishingIndicator"
 
-    -- Fish Value Filter Frame (horizontal layout)
+    -- Auto Cast Frame with modern design and colored icon (vertical list)
+    local autoCastFrame = createStyledFrame(layoutFrame, "AutoCastFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    autoCastFrame.BackgroundTransparency = 1
+    local autoCastButton, autoCastToggleBg, autoCastLabel, autoCastIndicator, autoCastSubtitle, autoCastIconContainer, autoCastStatusDot, autoCastIndicatorShadow = 
+        createToggleSystem(autoCastFrame, "Auto Cast", false, GUIStyles.Icons.AutoCast)
+    autoCastButton.Name = "AutoCastButton"
+    autoCastToggleBg.Name = "AutoCastToggleBg"
+    autoCastIndicator.Name = "AutoCastIndicator"
+
+    -- Auto Sell Frame with modern design and colored icon (vertical list)
+    local autoSellFrame = createStyledFrame(layoutFrame, "AutoSellFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    autoSellFrame.BackgroundTransparency = 1
+    local autoSellButton, autoSellToggleBg, autoSellLabel, autoSellIndicator, autoSellSubtitle, autoSellIconContainer, autoSellStatusDot, autoSellIndicatorShadow = 
+        createToggleSystem(autoSellFrame, "Auto Sell", false, GUIStyles.Icons.AutoSell)
+    autoSellButton.Name = "AutoSellButton"
+    autoSellToggleBg.Name = "AutoSellToggleBg"
+    autoSellIndicator.Name = "AutoSellIndicator"
+
+    -- Auto Shake Frame with modern design and colored icon (vertical list)
+    local autoShakeFrame = createStyledFrame(layoutFrame, "AutoShakeFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    autoShakeFrame.BackgroundTransparency = 1
+    local autoShakeButton, autoShakeToggleBg, autoShakeLabel, autoShakeIndicator, autoShakeSubtitle, autoShakeIconContainer, autoShakeStatusDot, autoShakeIndicatorShadow = 
+        createToggleSystem(autoShakeFrame, "Auto Shake", false, GUIStyles.Icons.AutoShake)
+    autoShakeButton.Name = "AutoShakeButton"
+    autoShakeToggleBg.Name = "AutoShakeToggleBg"
+    autoShakeIndicator.Name = "AutoShakeIndicator"
+
+    -- ESP Toggle with visual frame (vertical list)
+    local espFrame = createStyledFrame(layoutFrame, "ESPFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    espFrame.BackgroundTransparency = 1
+    local espButton, espToggleBg, espLabel, espIndicator, espSubtitle, espIconContainer, espStatusDot, espIndicatorShadow = 
+        createToggleSystem(espFrame, "ESP Toggle", false, GUIStyles.Icons.ESP)
+    espButton.Name = "ESPButton"
+    espToggleBg.Name = "ESPToggleBg"
+    espIndicator.Name = "ESPIndicator"
+
+    -- Anti AFK Frame with modern design and colored icon (vertical list)
+    local antiAFKFrame = createStyledFrame(layoutFrame, "AntiAFKFrame", 
+        UDim2.new(1, 0, 0, GUIStyles.Sizes.RowHeight))
+    antiAFKFrame.BackgroundTransparency = 1
+    local antiAFKButton, antiAFKToggleBg, antiAFKLabel, antiAFKIndicator, antiAFKSubtitle, antiAFKIconContainer, antiAFKStatusDot, antiAFKIndicatorShadow = 
+        createToggleSystem(antiAFKFrame, "Anti AFK", false, GUIStyles.Icons.AntiAFK)
+    antiAFKButton.Name = "AntiAFKButton"
+    antiAFKToggleBg.Name = "AntiAFKToggleBg"
+    antiAFKIndicator.Name = "AntiAFKIndicator"
+
+    -- Fish Value Filter Frame (vertical layout)
     local fishValueFrame = createStyledFrame(layoutFrame, "FishValueFrame", UDim2.new(1, 0, 0, 45))
-    fishValueFrame.LayoutOrder = 2
     
     local fishValueLabel = Instance.new("TextLabel")
     fishValueLabel.Parent = fishValueFrame
     fishValueLabel.BackgroundTransparency = 1
     fishValueLabel.Position = UDim2.new(0.03, 0, 0.2, 0)
-    fishValueLabel.Size = UDim2.new(0.5, 0, 0.6, 0)  -- Half width for horizontal layout
+    fishValueLabel.Size = UDim2.new(0.5, 0, 0.6, 0)
     fishValueLabel.Font = GUIStyles.Fonts.Primary
     fishValueLabel.Text = "MIN FISH VALUE:"
     fishValueLabel.TextColor3 = GUIStyles.Colors.Text
@@ -776,8 +813,8 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     fishValueTextBox.Parent = fishValueFrame
     fishValueTextBox.BackgroundColor3 = GUIStyles.Colors.Black
     fishValueTextBox.BorderSizePixel = 0
-    fishValueTextBox.Position = UDim2.new(0.55, 0, 0.25, 0)  -- Position to right side
-    fishValueTextBox.Size = UDim2.new(0.25, 0, 0.5, 0)       -- Smaller for landscape
+    fishValueTextBox.Position = UDim2.new(0.55, 0, 0.25, 0)
+    fishValueTextBox.Size = UDim2.new(0.25, 0, 0.5, 0)
     fishValueTextBox.ZIndex = 3
     fishValueTextBox.Font = GUIStyles.Fonts.Primary
     fishValueTextBox.PlaceholderText = "100"
@@ -787,16 +824,15 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     
     createUICorner(fishValueTextBox)
 
-    -- Advanced Statistics Frame (compact for landscape)
+    -- Advanced Statistics Frame (compact)
     local advStatsFrame = createStyledFrame(layoutFrame, "AdvancedStatsFrame", UDim2.new(1, 0, 0, 40))
-    advStatsFrame.LayoutOrder = 3
     
     local advStatsText = Instance.new("TextLabel")
     advStatsText.Name = "AdvancedStatsText"
     advStatsText.Parent = advStatsFrame
     advStatsText.BackgroundTransparency = 1
     advStatsText.Position = UDim2.new(0.03, 0, 0.25, 0)
-    advStatsText.Size = UDim2.new(0.94, 0, 0.5, 0)  -- Reduced height for landscape
+    advStatsText.Size = UDim2.new(0.94, 0, 0.5, 0)
     advStatsText.Font = GUIStyles.Fonts.Primary
     advStatsText.Text = "💰 Money: ₡0 | 🏆 Rare: 0 | 👑 Legendary: 0"
     advStatsText.TextColor3 = GUIStyles.Colors.Text
@@ -825,6 +861,21 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
         smartIconContainer = smartIconContainer,
         smartStatusDot = smartStatusDot,
         smartIndicatorShadow = smartIndicatorShadow,
+        autoCastButton = autoCastButton,
+        autoCastToggleBg = autoCastToggleBg,
+        autoCastIndicator = autoCastIndicator,
+        autoSellButton = autoSellButton,
+        autoSellToggleBg = autoSellToggleBg,
+        autoSellIndicator = autoSellIndicator,
+        autoShakeButton = autoShakeButton,
+        autoShakeToggleBg = autoShakeToggleBg,
+        autoShakeIndicator = autoShakeIndicator,
+        espButton = espButton,
+        espToggleBg = espToggleBg,
+        espIndicator = espIndicator,
+        antiAFKButton = antiAFKButton,
+        antiAFKToggleBg = antiAFKToggleBg,
+        antiAFKIndicator = antiAFKIndicator,
         fishValueTextBox = fishValueTextBox,
         advStatsText = advStatsText
     }
@@ -1714,9 +1765,9 @@ GUIHandler.createTeleportPanel = function(parent, tpFolder)
     local teleportButtons = {}
     
     for categoryIndex, category in ipairs(islandCategories) do
-        -- Create category header
+        -- Create category header (full width and centered)
         local categoryFrame = createStyledFrame(layoutFrame, category.name .. "Header", 
-            UDim2.new(0.95, 0, 0, 50))
+            UDim2.new(1, -20, 0, 50))
         categoryFrame.BackgroundColor3 = category.color
         categoryFrame.BackgroundTransparency = 0.1
         createBorder(categoryFrame, 2, category.color)
@@ -1730,12 +1781,12 @@ GUIHandler.createTeleportPanel = function(parent, tpFolder)
         categoryText.Text = category.name
         categoryText.TextColor3 = GUIStyles.Colors.Text
         categoryText.TextScaled = true
-        categoryText.TextXAlignment = Enum.TextXAlignment.Left
+        categoryText.TextXAlignment = Enum.TextXAlignment.Center
         
-        -- Create islands in this category
+        -- Create islands in this category (full width and centered)
         for _, island in ipairs(category.islands) do
             local islandFrame = createStyledFrame(layoutFrame, island.value .. "Frame", 
-                UDim2.new(0.95, 0, 0, 60))
+                UDim2.new(1, -20, 0, 60))
             islandFrame.BackgroundColor3 = GUIStyles.Colors.Background
             islandFrame.BackgroundTransparency = 0.3
             
@@ -1749,12 +1800,12 @@ GUIHandler.createTeleportPanel = function(parent, tpFolder)
             hoverFrame.ZIndex = islandFrame.ZIndex + 1
             createUICorner(hoverFrame, GUIStyles.BorderRadius.Medium)
             
-            -- Island name text
+            -- Island name text (adjusted for full width)
             local islandText = Instance.new("TextLabel")
             islandText.Parent = islandFrame
             islandText.BackgroundTransparency = 1
             islandText.Position = UDim2.new(0, 15, 0, 0)
-            islandText.Size = UDim2.new(0.7, 0, 1, 0)
+            islandText.Size = UDim2.new(0.65, 0, 1, 0)
             islandText.Font = GUIStyles.Fonts.Primary
             islandText.Text = island.name
             islandText.TextColor3 = GUIStyles.Colors.Text
@@ -1762,15 +1813,15 @@ GUIHandler.createTeleportPanel = function(parent, tpFolder)
             islandText.TextXAlignment = Enum.TextXAlignment.Left
             islandText.ZIndex = islandFrame.ZIndex + 2
             
-            -- Teleport button
+            -- Teleport button (better positioning for full width)
             local teleportButton = Instance.new("TextButton")
             teleportButton.Name = island.value .. "Button"
             teleportButton.Parent = islandFrame
             teleportButton.BackgroundColor3 = category.color
             teleportButton.BackgroundTransparency = 0.2
             teleportButton.BorderSizePixel = 0
-            teleportButton.Position = UDim2.new(0.75, 0, 0.15, 0)
-            teleportButton.Size = UDim2.new(0.2, 0, 0.7, 0)
+            teleportButton.Position = UDim2.new(0.7, 0, 0.15, 0)
+            teleportButton.Size = UDim2.new(0.25, 0, 0.7, 0)
             teleportButton.Font = GUIStyles.Fonts.Primary
             teleportButton.Text = "🚀 TP"
             teleportButton.TextColor3 = GUIStyles.Colors.Text
@@ -1780,13 +1831,13 @@ GUIHandler.createTeleportPanel = function(parent, tpFolder)
             createUICorner(teleportButton, GUIStyles.BorderRadius.Medium)
             createBorder(teleportButton, 1, category.color)
             
-            -- Add hover effects
+            -- Add hover effects (adjusted for new button size)
             teleportButton.MouseEnter:Connect(function()
                 hoverFrame.BackgroundTransparency = 0.95
                 local TweenService = game:GetService("TweenService")
                 TweenService:Create(teleportButton, TweenInfo.new(0.2), {
                     BackgroundTransparency = 0.0,
-                    Size = UDim2.new(0.22, 0, 0.8, 0)
+                    Size = UDim2.new(0.27, 0, 0.8, 0)
                 }):Play()
                 TweenService:Create(islandText, TweenInfo.new(0.2), {
                     TextColor3 = category.color
@@ -1798,7 +1849,7 @@ GUIHandler.createTeleportPanel = function(parent, tpFolder)
                 local TweenService = game:GetService("TweenService")
                 TweenService:Create(teleportButton, TweenInfo.new(0.2), {
                     BackgroundTransparency = 0.2,
-                    Size = UDim2.new(0.2, 0, 0.7, 0)
+                    Size = UDim2.new(0.25, 0, 0.7, 0)
                 }):Play()
                 TweenService:Create(islandText, TweenInfo.new(0.2), {
                     TextColor3 = GUIStyles.Colors.Text
@@ -1839,9 +1890,9 @@ GUIHandler.createPlayerTeleportPanel = function(parent, playersService)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Padding = UDim.new(0, 5)
 
-    -- Search box
+    -- Search box (full width and centered)
     local searchFrame = createStyledFrame(layoutFrame, "SearchFrame", 
-        UDim2.new(0.95, 0, 0, 50))
+        UDim2.new(1, -20, 0, 50))
     searchFrame.BackgroundColor3 = GUIStyles.Colors.Dark
     searchFrame.BackgroundTransparency = 0.3
     
@@ -1891,7 +1942,7 @@ GUIHandler.createPlayerTeleportPanel = function(parent, playersService)
                    player.DisplayName:lower():find(searchTerm) then
                     
                     local playerFrame = createStyledFrame(layoutFrame, player.Name .. "Frame", 
-                        UDim2.new(0.95, 0, 0, 55))
+                        UDim2.new(1, -20, 0, 55))
                     playerFrame.BackgroundColor3 = GUIStyles.Colors.Background
                     playerFrame.BackgroundTransparency = 0.4
                     
@@ -1913,12 +1964,12 @@ GUIHandler.createPlayerTeleportPanel = function(parent, playersService)
                     avatarText.TextColor3 = GUIStyles.Colors.Text
                     avatarText.TextScaled = true
                     
-                    -- Player info
+                    -- Player info (adjusted for full width)
                     local playerName = Instance.new("TextLabel")
                     playerName.Parent = playerFrame
                     playerName.BackgroundTransparency = 1
                     playerName.Position = UDim2.new(0, 60, 0, 0)
-                    playerName.Size = UDim2.new(0.5, 0, 0.6, 0)
+                    playerName.Size = UDim2.new(0.45, 0, 0.6, 0)
                     playerName.Font = GUIStyles.Fonts.Primary
                     playerName.Text = player.DisplayName
                     playerName.TextColor3 = GUIStyles.Colors.Text
@@ -1929,22 +1980,22 @@ GUIHandler.createPlayerTeleportPanel = function(parent, playersService)
                     playerUsername.Parent = playerFrame
                     playerUsername.BackgroundTransparency = 1
                     playerUsername.Position = UDim2.new(0, 60, 0.6, 0)
-                    playerUsername.Size = UDim2.new(0.5, 0, 0.4, 0)
+                    playerUsername.Size = UDim2.new(0.45, 0, 0.4, 0)
                     playerUsername.Font = GUIStyles.Fonts.Body
                     playerUsername.Text = "@" .. player.Name
                     playerUsername.TextColor3 = GUIStyles.Colors.TextSecondary
                     playerUsername.TextScaled = true
                     playerUsername.TextXAlignment = Enum.TextXAlignment.Left
                     
-                    -- Teleport button
+                    -- Teleport button (better positioning for full width)
                     local tpButton = Instance.new("TextButton")
                     tpButton.Name = player.Name .. "TpButton"
                     tpButton.Parent = playerFrame
                     tpButton.BackgroundColor3 = GUIStyles.Colors.Success
                     tpButton.BackgroundTransparency = 0.2
                     tpButton.BorderSizePixel = 0
-                    tpButton.Position = UDim2.new(0.75, 0, 0.15, 0)
-                    tpButton.Size = UDim2.new(0.2, 0, 0.7, 0)
+                    tpButton.Position = UDim2.new(0.7, 0, 0.15, 0)
+                    tpButton.Size = UDim2.new(0.25, 0, 0.7, 0)
                     tpButton.Font = GUIStyles.Fonts.Primary
                     tpButton.Text = "🚀"
                     tpButton.TextColor3 = GUIStyles.Colors.Text
@@ -1952,12 +2003,12 @@ GUIHandler.createPlayerTeleportPanel = function(parent, playersService)
                     
                     createUICorner(tpButton, GUIStyles.BorderRadius.Medium)
                     
-                    -- Add hover effect
+                    -- Add hover effect (adjusted for new button size)
                     tpButton.MouseEnter:Connect(function()
                         local TweenService = game:GetService("TweenService")
                         TweenService:Create(tpButton, TweenInfo.new(0.2), {
                             BackgroundTransparency = 0.0,
-                            Size = UDim2.new(0.22, 0, 0.8, 0)
+                            Size = UDim2.new(0.27, 0, 0.8, 0)
                         }):Play()
                     end)
                     
@@ -1965,7 +2016,7 @@ GUIHandler.createPlayerTeleportPanel = function(parent, playersService)
                         local TweenService = game:GetService("TweenService")
                         TweenService:Create(tpButton, TweenInfo.new(0.2), {
                             BackgroundTransparency = 0.2,
-                            Size = UDim2.new(0.2, 0, 0.7, 0)
+                            Size = UDim2.new(0.25, 0, 0.7, 0)
                         }):Play()
                     end)
                     
