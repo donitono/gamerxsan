@@ -129,19 +129,19 @@ local GUIStyles = {
     },
     
     Sizes = {
-        ButtonFrame = UDim2.new(0.95, 0, 0.08, 0),         -- Wider and shorter for landscape
+        ButtonFrame = UDim2.new(0.898, 0, 0.106, 0),       -- Same as brutal.lua button size
         ToggleButton = UDim2.new(0.207, 0, 0.784, 0),
         Indicator = UDim2.new(0.257, 0, 0.730, 0),
         FloatingButton = UDim2.new(0, 60, 0, 60),
         
-        -- Modern iOS-style sizes optimized for landscape (针对横屏优化的现代化尺寸)
-        RowHeight = 50,                                     -- Reduced height for landscape
-        ToggleHeight = 32,                                  -- Toggle switch height  
-        ToggleWidth = 52,                                   -- Toggle switch width
-        IconSize = 24,                                      -- Slightly smaller icon size for landscape
-        Padding = 16,                                       -- Reduced padding for landscape
-        CardPadding = 12,                                   -- Smaller card padding
-        SectionSpacing = 16,                                -- Reduced space between sections
+        -- Modern iOS-style sizes optimized for compact layout
+        RowHeight = 45,                                     -- Smaller height like brutal.lua
+        ToggleHeight = 28,                                  -- Smaller toggle switch height  
+        ToggleWidth = 45,                                   -- Smaller toggle switch width
+        IconSize = 20,                                      -- Smaller icon size for compact layout
+        Padding = 12,                                       -- Smaller padding
+        CardPadding = 8,                                    -- Smaller card padding
+        SectionSpacing = 8,                                 -- Smaller space between sections
         
         -- Glass Morphism Effects (玻璃态效果)
         BlurRadius = 20,                                    -- Background blur
@@ -376,24 +376,24 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     createBorder(container, 1, GUIStyles.Colors.BorderLight)
     createEnhancedShadow(parent, container, "ShadowLow")
     
-    -- Modern colored icon container on the left (optimized for landscape)
+    -- Modern colored icon container on the left (compact size)
     local iconContainer = Instance.new("Frame")
     iconContainer.Parent = container
     iconContainer.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
     iconContainer.BackgroundTransparency = 0.15
     iconContainer.BorderSizePixel = 0
-    iconContainer.Position = UDim2.new(0, 12, 0.5, -12)  -- Smaller positioning for landscape
-    iconContainer.Size = UDim2.new(0, 24, 0, 24)         -- Smaller icon for landscape
-    createUICorner(iconContainer, GUIStyles.BorderRadius.Medium)
+    iconContainer.Position = UDim2.new(0, 8, 0.5, -8)    -- Smaller positioning
+    iconContainer.Size = UDim2.new(0, 16, 0, 16)         -- Much smaller icon
+    createUICorner(iconContainer, GUIStyles.BorderRadius.Small)
     
-    -- Add subtle glow to icon container (smaller for landscape)
+    -- Add subtle glow to icon container (smaller)
     local iconGlow = Instance.new("Frame")
     iconGlow.Parent = container
     iconGlow.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
     iconGlow.BackgroundTransparency = 0.85
     iconGlow.BorderSizePixel = 0
-    iconGlow.Position = UDim2.new(0, 10, 0.5, -14)       -- Adjusted for smaller icon
-    iconGlow.Size = UDim2.new(0, 28, 0, 28)              -- Smaller glow
+    iconGlow.Position = UDim2.new(0, 6, 0.5, -10)        -- Adjusted for smaller icon
+    iconGlow.Size = UDim2.new(0, 20, 0, 20)              -- Smaller glow
     iconGlow.ZIndex = iconContainer.ZIndex - 1
     createUICorner(iconGlow, GUIStyles.BorderRadius.Large)
     
@@ -409,73 +409,74 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     iconText.TextScaled = true
     iconText.ZIndex = iconContainer.ZIndex + 1
     
-    -- Modern typography for label (compact for landscape)
+    -- Modern typography for label (compact like brutal.lua)
     local label = Instance.new("TextLabel")
     label.Parent = container
     label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 45, 0, 4)     -- Adjusted for smaller icon
-    label.Size = UDim2.new(1, -120, 0, 18)      -- Adjusted width and height for landscape
+    label.Position = UDim2.new(0.030, 0, 0.216, 0)  -- Same position as brutal.lua
+    label.Size = UDim2.new(0.415, 0, 0.568, 0)      -- Same size as brutal.lua
     label.Font = GUIStyles.Fonts.Primary
     label.Text = labelText
     label.TextColor3 = GUIStyles.Colors.Text
-    label.TextSize = 14                          -- Slightly smaller text for landscape
+    label.TextScaled = true                          -- Use TextScaled like brutal.lua
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
     
-    -- Subtitle/description (compact for landscape)
+    -- Subtitle/description (hidden to keep it simple like brutal.lua)
     local subtitle = Instance.new("TextLabel")
     subtitle.Parent = container
     subtitle.BackgroundTransparency = 1
-    subtitle.Position = UDim2.new(0, 45, 0, 22)  -- Closer to main label
-    subtitle.Size = UDim2.new(1, -120, 0, 12)    -- Smaller subtitle
+    subtitle.Position = UDim2.new(0, 45, 0, 22)
+    subtitle.Size = UDim2.new(1, -120, 0, 12)
     subtitle.Font = GUIStyles.Fonts.Caption
     subtitle.Text = settingValue and "Enabled" or "Disabled"
     subtitle.TextColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary
-    subtitle.TextSize = 10                       -- Smaller subtitle text
+    subtitle.TextSize = 8                            -- Much smaller subtitle
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
     subtitle.TextYAlignment = Enum.TextYAlignment.Center
+    subtitle.Visible = false                         -- Hide subtitle to keep it clean like brutal.lua
     
-    -- Ultra-modern toggle switch (iPhone 15 Pro style) - Compact for landscape
+    -- Ultra-modern toggle switch (compact size like brutal.lua)
     local toggleContainer = Instance.new("Frame")
     toggleContainer.Parent = container
     toggleContainer.BackgroundTransparency = 1
-    toggleContainer.Position = UDim2.new(1, -75, 0.5, -15)  -- Adjusted for landscape
-    toggleContainer.Size = UDim2.new(0, 60, 0, 30)          -- Slightly smaller for landscape
+    toggleContainer.Position = UDim2.new(0.738, 0, 0.108, 0)  -- Same position as brutal.lua
+    toggleContainer.Size = UDim2.new(0.207, 0, 0.784, 0)      -- Same size as brutal.lua
     
     local toggleBg = Instance.new("Frame")
     toggleBg.Name = labelText .. "ToggleBg"
     toggleBg.Parent = toggleContainer
-    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or Color3.fromRGB(200, 200, 200)  -- Light gray when off
+    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or Color3.fromRGB(200, 200, 200)
     toggleBg.BackgroundTransparency = 0.05
     toggleBg.BorderSizePixel = 0
-    toggleBg.Position = UDim2.new(0.5, -25, 0.5, -12)      -- Centered in smaller container
-    toggleBg.Size = UDim2.new(0, 50, 0, 24)                 -- Compact toggle for landscape
+    toggleBg.Position = UDim2.new(0, 0, 0, 0)              -- Fill the container
+    toggleBg.Size = UDim2.new(1, 0, 1, 0)                  -- Fill the container
     toggleBg.ZIndex = 2
     
-    createUICorner(toggleBg, UDim.new(0, 12))  -- Smaller rounded ends for compact toggle
+    createUICorner(toggleBg, UDim.new(0, 8))  -- Smaller rounded corners
     
-    -- Modern circular indicator with perfect positioning (compact)
+    -- Modern circular indicator with perfect positioning (smaller)
     local indicator = Instance.new("Frame")
     indicator.Name = labelText .. "Indicator"
     indicator.Parent = toggleBg
-    indicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Pure white circle
+    indicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
     indicator.BorderSizePixel = 0
-    indicator.Position = settingValue and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)  -- Adjusted for 50px wide toggle
-    indicator.Size = UDim2.new(0, 18, 0, 18)  -- Smaller circle for landscape
+    indicator.Position = settingValue and UDim2.new(1, -16, 0.5, -6) or UDim2.new(0, 2, 0.5, -6)  -- Smaller positioning
+    indicator.Size = UDim2.new(0, 12, 0, 12)  -- Much smaller circle
     indicator.ZIndex = toggleBg.ZIndex + 2
     
-    createUICorner(indicator, UDim.new(0, 9))  -- Perfect circle (half of 18px)
+    createUICorner(indicator, UDim.new(0, 6))  -- Perfect circle (half of 12px)
     
-    -- Add subtle shadow to indicator for depth (compact)
+    -- Add subtle shadow to indicator for depth (smaller)
     local indicatorShadow = Instance.new("Frame")
     indicatorShadow.Parent = toggleBg
     indicatorShadow.BackgroundColor3 = GUIStyles.Colors.Black
-    indicatorShadow.BackgroundTransparency = 0.8  -- Lighter shadow
+    indicatorShadow.BackgroundTransparency = 0.8
     indicatorShadow.BorderSizePixel = 0
-    indicatorShadow.Position = indicator.Position + UDim2.new(0, 1, 0, 1)  -- Slight offset
-    indicatorShadow.Size = UDim2.new(0, 18, 0, 18)
+    indicatorShadow.Position = indicator.Position + UDim2.new(0, 1, 0, 1)
+    indicatorShadow.Size = UDim2.new(0, 12, 0, 12)
     indicatorShadow.ZIndex = indicator.ZIndex - 1
-    createUICorner(indicatorShadow, UDim.new(0, 9))
+    createUICorner(indicatorShadow, UDim.new(0, 6))
     
     -- Add subtle inner highlight to indicator for iOS look (compact)
     local indicatorHighlight = Instance.new("Frame")
@@ -580,7 +581,7 @@ end
 -- ===================================================================
 
 function GUIHandler.createSecurityPanel(parent, SecuritySettings)
-    -- Create clean iOS-style security panel
+    -- Create clean iOS-style security panel (compact size like boat panel)
     local SecurityFrame = Instance.new("ScrollingFrame")
     SecurityFrame.Name = "SecurityFrame"
     SecurityFrame.Parent = parent
@@ -588,8 +589,8 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     SecurityFrame.BackgroundColor3 = GUIStyles.Colors.Background
     SecurityFrame.BackgroundTransparency = 0.05
     SecurityFrame.BorderSizePixel = 0
-    SecurityFrame.Position = UDim2.new(0.25, 0, 0.12, 0)  -- Positioned more to left for landscape
-    SecurityFrame.Size = UDim2.new(0.75, 0, 0.88, 0)      -- Much wider for horizontal layout
+    SecurityFrame.Position = UDim2.new(0.376, 0, 0.147, 0)  -- Same position as boat panel
+    SecurityFrame.Size = UDim2.new(0.624, 0, 0.853, 0)      -- Same size as boat panel
     SecurityFrame.Visible = false
     SecurityFrame.ZIndex = 2
     SecurityFrame.ScrollBarThickness = 6
@@ -606,15 +607,15 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     listLayout.Parent = layoutFrame
     listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    listLayout.Padding = UDim.new(0, 2)  -- Tighter spacing like iOS
+    listLayout.Padding = UDim.new(0, 8)  -- Same spacing as brutal.lua
     
-    -- Add padding to layout frame (optimized for landscape)
+    -- Add padding to layout frame (same as brutal.lua)
     local layoutPadding = Instance.new("UIPadding")
     layoutPadding.Parent = layoutFrame
-    layoutPadding.PaddingTop = UDim.new(0, 8)      -- Reduced top padding
-    layoutPadding.PaddingLeft = UDim.new(0, 12)    -- Reduced left padding
-    layoutPadding.PaddingRight = UDim.new(0, 12)   -- Reduced right padding  
-    layoutPadding.PaddingBottom = UDim.new(0, 8)   -- Reduced bottom padding
+    layoutPadding.PaddingTop = UDim.new(0, 0)      -- No extra padding like brutal.lua
+    layoutPadding.PaddingLeft = UDim.new(0, 0)     -- No extra padding like brutal.lua
+    layoutPadding.PaddingRight = UDim.new(0, 0)    -- No extra padding like brutal.lua  
+    layoutPadding.PaddingBottom = UDim.new(0, 0)   -- No extra padding like brutal.lua
 
     -- Auto Fish Row with modern design and colored icon
     local adminFrame = createStyledFrame(layoutFrame, "AdminDetectionFrame", 
@@ -695,8 +696,8 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     AdvancedFrame.Parent = parent
     AdvancedFrame.Active = true
     AdvancedFrame.BackgroundTransparency = 1
-    AdvancedFrame.Position = UDim2.new(0.25, 0, 0.12, 0)  -- Positioned more to left for landscape
-    AdvancedFrame.Size = UDim2.new(0.75, 0, 0.88, 0)      -- Much wider for horizontal layout
+    AdvancedFrame.Position = UDim2.new(0.376, 0, 0.147, 0)  -- Same position as boat panel
+    AdvancedFrame.Size = UDim2.new(0.624, 0, 0.853, 0)      -- Same size as boat panel  
     AdvancedFrame.Visible = false
     AdvancedFrame.ZIndex = 2
     AdvancedFrame.ScrollBarThickness = 6
@@ -710,7 +711,7 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     listLayout.Parent = layoutFrame
     listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    listLayout.Padding = UDim.new(0, 4)  -- Reduced padding for landscape
+    listLayout.Padding = UDim.new(0, 8)  -- Same spacing as brutal.lua
     
     -- Add grid layout for landscape optimization
     local gridContainer = Instance.new("Frame")
