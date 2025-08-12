@@ -129,24 +129,24 @@ local GUIStyles = {
     },
     
     Sizes = {
-        ButtonFrame = UDim2.new(0.898, 0, 0.106, 0),
+        ButtonFrame = UDim2.new(0.95, 0, 0.08, 0),         -- Wider and shorter for landscape
         ToggleButton = UDim2.new(0.207, 0, 0.784, 0),
         Indicator = UDim2.new(0.257, 0, 0.730, 0),
         FloatingButton = UDim2.new(0, 60, 0, 60),
         
-        -- Modern iOS-style sizes (现代化尺寸)
-        RowHeight = 60,                                 -- Increased row height for better touch
-        ToggleHeight = 32,                              -- Toggle switch height  
-        ToggleWidth = 52,                               -- Toggle switch width
-        IconSize = 28,                                  -- Larger icon size
-        Padding = 20,                                   -- Increased padding
-        CardPadding = 16,                               -- Card internal padding
-        SectionSpacing = 24,                            -- Space between sections
+        -- Modern iOS-style sizes optimized for landscape (针对横屏优化的现代化尺寸)
+        RowHeight = 50,                                     -- Reduced height for landscape
+        ToggleHeight = 32,                                  -- Toggle switch height  
+        ToggleWidth = 52,                                   -- Toggle switch width
+        IconSize = 24,                                      -- Slightly smaller icon size for landscape
+        Padding = 16,                                       -- Reduced padding for landscape
+        CardPadding = 12,                                   -- Smaller card padding
+        SectionSpacing = 16,                                -- Reduced space between sections
         
         -- Glass Morphism Effects (玻璃态效果)
-        BlurRadius = 20,                                -- Background blur
-        ShadowOffset = 4,                               -- Shadow distance
-        BorderWidth = 1                                 -- Thin borders
+        BlurRadius = 20,                                    -- Background blur
+        ShadowOffset = 3,                                   -- Smaller shadow for landscape
+        BorderWidth = 1                                     -- Thin borders
     },
     
     -- Visual Effects (视觉效果)
@@ -375,24 +375,24 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     createBorder(container, 1, GUIStyles.Colors.BorderLight)
     createEnhancedShadow(parent, container, "ShadowLow")
     
-    -- Modern colored icon container on the left
+    -- Modern colored icon container on the left (optimized for landscape)
     local iconContainer = Instance.new("Frame")
     iconContainer.Parent = container
     iconContainer.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
     iconContainer.BackgroundTransparency = 0.15
     iconContainer.BorderSizePixel = 0
-    iconContainer.Position = UDim2.new(0, 20, 0.5, -18)
-    iconContainer.Size = UDim2.new(0, 36, 0, 36)
+    iconContainer.Position = UDim2.new(0, 12, 0.5, -12)  -- Smaller positioning for landscape
+    iconContainer.Size = UDim2.new(0, 24, 0, 24)         -- Smaller icon for landscape
     createUICorner(iconContainer, GUIStyles.BorderRadius.Medium)
     
-    -- Add subtle glow to icon container
+    -- Add subtle glow to icon container (smaller for landscape)
     local iconGlow = Instance.new("Frame")
     iconGlow.Parent = container
     iconGlow.BackgroundColor3 = (iconData and iconData.accent) or GUIStyles.Colors.IconBlue
     iconGlow.BackgroundTransparency = 0.85
     iconGlow.BorderSizePixel = 0
-    iconGlow.Position = UDim2.new(0, 18, 0.5, -20)
-    iconGlow.Size = UDim2.new(0, 40, 0, 40)
+    iconGlow.Position = UDim2.new(0, 10, 0.5, -14)       -- Adjusted for smaller icon
+    iconGlow.Size = UDim2.new(0, 28, 0, 28)              -- Smaller glow
     iconGlow.ZIndex = iconContainer.ZIndex - 1
     createUICorner(iconGlow, GUIStyles.BorderRadius.Large)
     
@@ -408,107 +408,96 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     iconText.TextScaled = true
     iconText.ZIndex = iconContainer.ZIndex + 1
     
-    -- Modern typography for label
+    -- Modern typography for label (compact for landscape)
     local label = Instance.new("TextLabel")
     label.Parent = container
     label.BackgroundTransparency = 1
-    label.Position = UDim2.new(0, 72, 0, 8)
-    label.Size = UDim2.new(1, -200, 0, 20)
+    label.Position = UDim2.new(0, 45, 0, 4)     -- Adjusted for smaller icon
+    label.Size = UDim2.new(1, -120, 0, 18)      -- Adjusted width and height for landscape
     label.Font = GUIStyles.Fonts.Primary
     label.Text = labelText
     label.TextColor3 = GUIStyles.Colors.Text
-    label.TextSize = 16
+    label.TextSize = 14                          -- Slightly smaller text for landscape
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.TextYAlignment = Enum.TextYAlignment.Center
     
-    -- Subtitle/description (optional)
+    -- Subtitle/description (compact for landscape)
     local subtitle = Instance.new("TextLabel")
     subtitle.Parent = container
     subtitle.BackgroundTransparency = 1
-    subtitle.Position = UDim2.new(0, 72, 0, 28)
-    subtitle.Size = UDim2.new(1, -200, 0, 16)
+    subtitle.Position = UDim2.new(0, 45, 0, 22)  -- Closer to main label
+    subtitle.Size = UDim2.new(1, -120, 0, 12)    -- Smaller subtitle
     subtitle.Font = GUIStyles.Fonts.Caption
     subtitle.Text = settingValue and "Enabled" or "Disabled"
     subtitle.TextColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary
-    subtitle.TextSize = 12
+    subtitle.TextSize = 10                       -- Smaller subtitle text
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
     subtitle.TextYAlignment = Enum.TextYAlignment.Center
     
-    -- Ultra-modern toggle switch (iPhone 15 Pro style)
+    -- Ultra-modern toggle switch (iPhone 15 Pro style) - Compact for landscape
     local toggleContainer = Instance.new("Frame")
     toggleContainer.Parent = container
     toggleContainer.BackgroundTransparency = 1
-    toggleContainer.Position = UDim2.new(1, -80, 0.5, -20)
-    toggleContainer.Size = UDim2.new(0, 60, 0, 40)
+    toggleContainer.Position = UDim2.new(1, -75, 0.5, -15)  -- Adjusted for landscape
+    toggleContainer.Size = UDim2.new(0, 60, 0, 30)          -- Slightly smaller for landscape
     
     local toggleBg = Instance.new("Frame")
     toggleBg.Name = labelText .. "ToggleBg"
     toggleBg.Parent = toggleContainer
-    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.ToggleOff
+    toggleBg.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or Color3.fromRGB(200, 200, 200)  -- Light gray when off
     toggleBg.BackgroundTransparency = 0.05
     toggleBg.BorderSizePixel = 0
-    toggleBg.Position = UDim2.new(0.5, -26, 0.5, -15)
-    toggleBg.Size = UDim2.new(0, 52, 0, 30)
+    toggleBg.Position = UDim2.new(0.5, -25, 0.5, -12)      -- Centered in smaller container
+    toggleBg.Size = UDim2.new(0, 50, 0, 24)                 -- Compact toggle for landscape
     toggleBg.ZIndex = 2
     
-    createUICorner(toggleBg, UDim.new(0, 15))  -- Perfect rounded ends
+    createUICorner(toggleBg, UDim.new(0, 12))  -- Smaller rounded ends for compact toggle
     
-    -- Add inner shadow to toggle track
-    local toggleShadow = Instance.new("Frame")
-    toggleShadow.Parent = toggleBg
-    toggleShadow.BackgroundColor3 = GUIStyles.Colors.Black
-    toggleShadow.BackgroundTransparency = 0.95
-    toggleShadow.BorderSizePixel = 0
-    toggleShadow.Position = UDim2.new(0, 1, 0, 1)
-    toggleShadow.Size = UDim2.new(1, -2, 1, -2)
-    toggleShadow.ZIndex = toggleBg.ZIndex + 1
-    createUICorner(toggleShadow, UDim.new(0, 14))
-    
-    -- Modern toggle indicator with enhanced design
+    -- Modern circular indicator with perfect positioning (compact)
     local indicator = Instance.new("Frame")
     indicator.Name = labelText .. "Indicator"
     indicator.Parent = toggleBg
-    indicator.BackgroundColor3 = GUIStyles.Colors.Text
+    indicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Pure white circle
     indicator.BorderSizePixel = 0
-    indicator.Position = settingValue and UDim2.new(1, -28, 0.5, -13) or UDim2.new(0, 2, 0.5, -13)
-    indicator.Size = UDim2.new(0, 26, 0, 26)
+    indicator.Position = settingValue and UDim2.new(1, -22, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)  -- Compact positioning
+    indicator.Size = UDim2.new(0, 18, 0, 18)  -- Smaller circle for landscape
     indicator.ZIndex = toggleBg.ZIndex + 2
     
-    createUICorner(indicator, UDim.new(0, 13))  -- Perfect circle
+    createUICorner(indicator, UDim.new(0, 9))  -- Perfect circle (half of 18px)
     
-    -- Add enhanced shadow to indicator
+    -- Add subtle shadow to indicator for depth (compact)
     local indicatorShadow = Instance.new("Frame")
     indicatorShadow.Parent = toggleBg
     indicatorShadow.BackgroundColor3 = GUIStyles.Colors.Black
-    indicatorShadow.BackgroundTransparency = 0.75
+    indicatorShadow.BackgroundTransparency = 0.8  -- Lighter shadow
     indicatorShadow.BorderSizePixel = 0
-    indicatorShadow.Position = indicator.Position + UDim2.new(0, 1, 0, 2)
-    indicatorShadow.Size = UDim2.new(0, 26, 0, 26)
+    indicatorShadow.Position = indicator.Position + UDim2.new(0, 1, 0, 1)  -- Slight offset
+    indicatorShadow.Size = UDim2.new(0, 18, 0, 18)
     indicatorShadow.ZIndex = indicator.ZIndex - 1
-    createUICorner(indicatorShadow, UDim.new(0, 13))
+    createUICorner(indicatorShadow, UDim.new(0, 9))
     
-    -- Add subtle inner highlight to indicator
+    -- Add subtle inner highlight to indicator for iOS look (compact)
     local indicatorHighlight = Instance.new("Frame")
     indicatorHighlight.Parent = indicator
-    indicatorHighlight.BackgroundColor3 = GUIStyles.Colors.Text
-    indicatorHighlight.BackgroundTransparency = 0.1
+    indicatorHighlight.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    indicatorHighlight.BackgroundTransparency = 0.3  -- Subtle highlight
     indicatorHighlight.BorderSizePixel = 0
-    indicatorHighlight.Position = UDim2.new(0, 2, 0, 2)
-    indicatorHighlight.Size = UDim2.new(1, -4, 0.4, 0)
+    indicatorHighlight.Position = UDim2.new(0, 1, 0, 1)
+    indicatorHighlight.Size = UDim2.new(1, -2, 0.3, 0)  -- Top highlight only, smaller
     indicatorHighlight.ZIndex = indicator.ZIndex + 1
-    createUICorner(indicatorHighlight, UDim.new(0, 11))
+    createUICorner(indicatorHighlight, UDim.new(0, 7))
     
-    -- Status indicator dot (active state)
+    -- Status indicator dot (active state) - smaller for landscape
     local statusDot = Instance.new("Frame")
     statusDot.Name = "StatusDot"
     statusDot.Parent = iconContainer
     statusDot.BackgroundColor3 = settingValue and GUIStyles.Colors.Success or GUIStyles.Colors.TextSecondary
     statusDot.BackgroundTransparency = settingValue and 0.2 or 0.8
     statusDot.BorderSizePixel = 0
-    statusDot.Position = UDim2.new(1, -8, 0, 2)
-    statusDot.Size = UDim2.new(0, 8, 0, 8)
+    statusDot.Position = UDim2.new(1, -6, 0, 1)      -- Adjusted for smaller icon
+    statusDot.Size = UDim2.new(0, 6, 0, 6)           -- Smaller status dot
     statusDot.ZIndex = iconContainer.ZIndex + 2
-    createUICorner(statusDot, UDim.new(0, 4))
+    createUICorner(statusDot, UDim.new(0, 3))
     
     -- Invisible button for interaction with better hit area
     local button = Instance.new("TextButton")
@@ -598,8 +587,8 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     SecurityFrame.BackgroundColor3 = GUIStyles.Colors.Background
     SecurityFrame.BackgroundTransparency = 0.05
     SecurityFrame.BorderSizePixel = 0
-    SecurityFrame.Position = UDim2.new(0.376, 0, 0.147, 0)
-    SecurityFrame.Size = UDim2.new(0.624, 0, 0.853, 0)
+    SecurityFrame.Position = UDim2.new(0.25, 0, 0.12, 0)  -- Positioned more to left for landscape
+    SecurityFrame.Size = UDim2.new(0.75, 0, 0.88, 0)      -- Much wider for horizontal layout
     SecurityFrame.Visible = false
     SecurityFrame.ZIndex = 2
     SecurityFrame.ScrollBarThickness = 6
@@ -618,13 +607,13 @@ function GUIHandler.createSecurityPanel(parent, SecuritySettings)
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
     listLayout.Padding = UDim.new(0, 2)  -- Tighter spacing like iOS
     
-    -- Add padding to layout frame
+    -- Add padding to layout frame (optimized for landscape)
     local layoutPadding = Instance.new("UIPadding")
     layoutPadding.Parent = layoutFrame
-    layoutPadding.PaddingTop = UDim.new(0, 16)
-    layoutPadding.PaddingLeft = UDim.new(0, 16)
-    layoutPadding.PaddingRight = UDim.new(0, 16)
-    layoutPadding.PaddingBottom = UDim.new(0, 16)
+    layoutPadding.PaddingTop = UDim.new(0, 8)      -- Reduced top padding
+    layoutPadding.PaddingLeft = UDim.new(0, 12)    -- Reduced left padding
+    layoutPadding.PaddingRight = UDim.new(0, 12)   -- Reduced right padding  
+    layoutPadding.PaddingBottom = UDim.new(0, 8)   -- Reduced bottom padding
 
     -- Auto Fish Row with modern design and colored icon
     local adminFrame = createStyledFrame(layoutFrame, "AdminDetectionFrame", 
@@ -705,8 +694,8 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     AdvancedFrame.Parent = parent
     AdvancedFrame.Active = true
     AdvancedFrame.BackgroundTransparency = 1
-    AdvancedFrame.Position = UDim2.new(0.376, 0, 0.147, 0)
-    AdvancedFrame.Size = UDim2.new(0.624, 0, 0.853, 0)
+    AdvancedFrame.Position = UDim2.new(0.25, 0, 0.12, 0)  -- Positioned more to left for landscape
+    AdvancedFrame.Size = UDim2.new(0.75, 0, 0.88, 0)      -- Much wider for horizontal layout
     AdvancedFrame.Visible = false
     AdvancedFrame.ZIndex = 2
     AdvancedFrame.ScrollBarThickness = 6
@@ -720,40 +709,58 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     listLayout.Parent = layoutFrame
     listLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    listLayout.Padding = UDim.new(0, 8)
+    listLayout.Padding = UDim.new(0, 4)  -- Reduced padding for landscape
+    
+    -- Add grid layout for landscape optimization
+    local gridContainer = Instance.new("Frame")
+    gridContainer.Name = "GridContainer"
+    gridContainer.Parent = layoutFrame
+    gridContainer.BackgroundTransparency = 1
+    gridContainer.Size = UDim2.new(1, 0, 0, 120)  -- Two-row layout
+    gridContainer.LayoutOrder = 1
+    
+    local gridLayout = Instance.new("UIGridLayout")
+    gridLayout.Parent = gridContainer
+    gridLayout.CellSize = UDim2.new(0.48, 0, 0, 50)  -- Each cell takes ~48% width
+    gridLayout.CellPadding = UDim2.new(0.02, 0, 0, 8) -- Small gaps between cells
+    gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
-    -- Luck Boost Frame with modern design and colored icon
-    local luckFrame = createStyledFrame(layoutFrame, "LuckBoostFrame", GUIStyles.Sizes.ButtonFrame)
+    -- Luck Boost Frame with modern design and colored icon (in grid)
+    local luckFrame = createStyledFrame(gridContainer, "LuckBoostFrame", UDim2.new(1, 0, 1, 0))
+    luckFrame.LayoutOrder = 1
     local luckButton, luckToggleBg, luckLabel, luckIndicator, luckSubtitle, luckIconContainer, luckStatusDot, luckIndicatorShadow = 
         createToggleSystem(luckFrame, "Luck Boost", false, GUIStyles.Icons.Luck)
     luckButton.Name = "LuckBoostButton"
     luckToggleBg.Name = "LuckBoostToggleBg"
     luckIndicator.Name = "LuckBoostIndicator"
 
-    -- Weather Boost Frame with modern design and colored icon
-    local weatherFrame = createStyledFrame(layoutFrame, "WeatherBoostFrame", GUIStyles.Sizes.ButtonFrame)
+    -- Weather Boost Frame with modern design and colored icon (in grid)
+    local weatherFrame = createStyledFrame(gridContainer, "WeatherBoostFrame", UDim2.new(1, 0, 1, 0))
+    weatherFrame.LayoutOrder = 2
     local weatherButton, weatherToggleBg, weatherLabel, weatherIndicator, weatherSubtitle, weatherIconContainer, weatherStatusDot, weatherIndicatorShadow = 
         createToggleSystem(weatherFrame, "Weather Boost", false, GUIStyles.Icons.Weather)
     weatherButton.Name = "WeatherBoostButton"
     weatherToggleBg.Name = "WeatherBoostToggleBg"
     weatherIndicator.Name = "WeatherBoostIndicator"
 
-    -- Smart Fishing Frame with modern design and colored icon
-    local smartFrame = createStyledFrame(layoutFrame, "SmartFishingFrame", GUIStyles.Sizes.ButtonFrame)
+    -- Smart Fishing Frame with modern design and colored icon (in grid)
+    local smartFrame = createStyledFrame(gridContainer, "SmartFishingFrame", UDim2.new(1, 0, 1, 0))
+    smartFrame.LayoutOrder = 3
     local smartButton, smartToggleBg, smartLabel, smartIndicator, smartSubtitle, smartIconContainer, smartStatusDot, smartIndicatorShadow = 
         createToggleSystem(smartFrame, "Smart Fishing", false, GUIStyles.Icons.Smart)
     smartButton.Name = "SmartFishingButton"
     smartToggleBg.Name = "SmartFishingToggleBg"
     smartIndicator.Name = "SmartFishingIndicator"
 
-    -- Fish Value Filter Frame
-    local fishValueFrame = createStyledFrame(layoutFrame, "FishValueFrame", GUIStyles.Sizes.ButtonFrame)
+    -- Fish Value Filter Frame (horizontal layout)
+    local fishValueFrame = createStyledFrame(layoutFrame, "FishValueFrame", UDim2.new(1, 0, 0, 45))
+    fishValueFrame.LayoutOrder = 2
     
     local fishValueLabel = Instance.new("TextLabel")
     fishValueLabel.Parent = fishValueFrame
     fishValueLabel.BackgroundTransparency = 1
-    fishValueLabel.Position = GUIStyles.Positions.ButtonText
-    fishValueLabel.Size = UDim2.new(0.415, 0, 0.568, 0)
+    fishValueLabel.Position = UDim2.new(0.03, 0, 0.2, 0)
+    fishValueLabel.Size = UDim2.new(0.5, 0, 0.6, 0)  -- Half width for horizontal layout
     fishValueLabel.Font = GUIStyles.Fonts.Primary
     fishValueLabel.Text = "MIN FISH VALUE:"
     fishValueLabel.TextColor3 = GUIStyles.Colors.Text
@@ -765,8 +772,8 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     fishValueTextBox.Parent = fishValueFrame
     fishValueTextBox.BackgroundColor3 = GUIStyles.Colors.Black
     fishValueTextBox.BorderSizePixel = 0
-    fishValueTextBox.Position = GUIStyles.Positions.Indicator
-    fishValueTextBox.Size = GUIStyles.Sizes.Indicator
+    fishValueTextBox.Position = UDim2.new(0.55, 0, 0.25, 0)  -- Position to right side
+    fishValueTextBox.Size = UDim2.new(0.25, 0, 0.5, 0)       -- Smaller for landscape
     fishValueTextBox.ZIndex = 3
     fishValueTextBox.Font = GUIStyles.Fonts.Primary
     fishValueTextBox.PlaceholderText = "100"
@@ -776,15 +783,16 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     
     createUICorner(fishValueTextBox)
 
-    -- Advanced Statistics Frame
-    local advStatsFrame = createStyledFrame(layoutFrame, "AdvancedStatsFrame", GUIStyles.Sizes.ButtonFrame)
+    -- Advanced Statistics Frame (compact for landscape)
+    local advStatsFrame = createStyledFrame(layoutFrame, "AdvancedStatsFrame", UDim2.new(1, 0, 0, 40))
+    advStatsFrame.LayoutOrder = 3
     
     local advStatsText = Instance.new("TextLabel")
     advStatsText.Name = "AdvancedStatsText"
     advStatsText.Parent = advStatsFrame
     advStatsText.BackgroundTransparency = 1
-    advStatsText.Position = UDim2.new(0.030, 0, 0.216, 0)
-    advStatsText.Size = UDim2.new(0.940, 0, 0.568, 0)
+    advStatsText.Position = UDim2.new(0.03, 0, 0.25, 0)
+    advStatsText.Size = UDim2.new(0.94, 0, 0.5, 0)  -- Reduced height for landscape
     advStatsText.Font = GUIStyles.Fonts.Primary
     advStatsText.Text = "💰 Money: ₡0 | 🏆 Rare: 0 | 👑 Legendary: 0"
     advStatsText.TextColor3 = GUIStyles.Colors.Text
