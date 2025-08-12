@@ -326,6 +326,22 @@ local function createIconContainer(parent, iconData, size)
     return container, icon
 end
 
+-- Basic Frame Creator (基础框架创建器)
+local function createStyledFrame(parent, name, size, position, backgroundColor)
+    local frame = Instance.new("Frame")
+    frame.Name = name
+    frame.Parent = parent
+    frame.BackgroundColor3 = backgroundColor or GUIStyles.Colors.Background
+    frame.BorderSizePixel = 0
+    frame.Size = size
+    if position then
+        frame.Position = position
+    end
+    
+    createUICorner(frame)
+    return frame
+end
+
 -- Animated Card Component (动画卡片组件)
 local function createAnimatedCard(parent, name, size, position)
     local card = createStyledFrame(parent, name, size, position, GUIStyles.Colors.Surface)
@@ -341,21 +357,6 @@ local function createAnimatedCard(parent, name, size, position)
     createBorder(card, 1, GUIStyles.Colors.BorderLight)
     
     return card
-end
-
-local function createStyledFrame(parent, name, size, position, backgroundColor)
-    local frame = Instance.new("Frame")
-    frame.Name = name
-    frame.Parent = parent
-    frame.BackgroundColor3 = backgroundColor or GUIStyles.Colors.Background
-    frame.BorderSizePixel = 0
-    frame.Size = size
-    if position then
-        frame.Position = position
-    end
-    
-    createUICorner(frame)
-    return frame
 end
 
 local function createToggleSystem(parent, labelText, settingValue, iconData)
@@ -799,34 +800,6 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     advStatsText.Text = "💰 Money: ₡0 | 🏆 Rare: 0 | 👑 Legendary: 0"
     advStatsText.TextColor3 = GUIStyles.Colors.Text
     advStatsText.TextScaled = true
-
-    return {
-        frame = AdvancedFrame,
-        luckButton = luckButton,
-        luckToggleBg = luckToggleBg,
-        luckIndicator = luckIndicator,
-        luckSubtitle = luckSubtitle,
-        luckIconContainer = luckIconContainer,
-        luckStatusDot = luckStatusDot,
-        luckIndicatorShadow = luckIndicatorShadow,
-        weatherButton = weatherButton,
-        weatherToggleBg = weatherToggleBg,
-        weatherIndicator = weatherIndicator,
-        weatherSubtitle = weatherSubtitle,
-        weatherIconContainer = weatherIconContainer,
-        weatherStatusDot = weatherStatusDot,
-        weatherIndicatorShadow = weatherIndicatorShadow,
-        smartButton = smartButton,
-        smartToggleBg = smartToggleBg,
-        smartIndicator = smartIndicator,
-        smartSubtitle = smartSubtitle,
-        smartIconContainer = smartIconContainer,
-        smartStatusDot = smartStatusDot,
-        smartIndicatorShadow = smartIndicatorShadow,
-        fishValueTextBox = fishValueTextBox,
-        advStatsText = advStatsText
-    }
-end
 
     return {
         frame = AdvancedFrame,
