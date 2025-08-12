@@ -459,7 +459,7 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
     indicator.Parent = toggleBg
     indicator.BackgroundColor3 = Color3.fromRGB(255, 255, 255)  -- Pure white circle
     indicator.BorderSizePixel = 0
-    indicator.Position = settingValue and UDim2.new(1, -22, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)  -- Compact positioning
+    indicator.Position = settingValue and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9)  -- Adjusted for 50px wide toggle
     indicator.Size = UDim2.new(0, 18, 0, 18)  -- Smaller circle for landscape
     indicator.ZIndex = toggleBg.ZIndex + 2
     
@@ -518,17 +518,17 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
             Size = UDim2.new(1, 2, 1, 2)
         }):Play()
         
-        -- Icon glow effect
+        -- Icon glow effect (adjusted for smaller landscape icons)
         TweenService:Create(iconGlow, hoverTweenInfo, {
             BackgroundTransparency = 0.75,
-            Size = UDim2.new(0, 44, 0, 44),
-            Position = UDim2.new(0, 16, 0.5, -22)
+            Size = UDim2.new(0, 32, 0, 32),  -- Adjusted for 28px base glow
+            Position = UDim2.new(0, 8, 0.5, -16)  -- Adjusted for smaller position
         }):Play()
         
-        -- Icon scale
+        -- Icon scale (adjusted for smaller landscape icons)
         TweenService:Create(iconContainer, hoverTweenInfo, {
-            Size = UDim2.new(0, 38, 0, 38),
-            Position = UDim2.new(0, 19, 0.5, -19)
+            Size = UDim2.new(0, 26, 0, 26),  -- Slightly larger from 24px base
+            Position = UDim2.new(0, 11, 0.5, -13)  -- Adjusted position
         }):Play()
         
         -- Label color enhancement
@@ -536,10 +536,10 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
             TextColor3 = (iconData and iconData.accent) or GUIStyles.Colors.Primary
         }):Play()
         
-        -- Toggle hover effect
+        -- Toggle hover effect (adjusted for compact toggle)
         TweenService:Create(toggleBg, hoverTweenInfo, {
-            Size = UDim2.new(0, 54, 0, 32),
-            Position = UDim2.new(0.5, -27, 0.5, -16)
+            Size = UDim2.new(0, 52, 0, 26),  -- Slightly larger from 50x24 base
+            Position = UDim2.new(0.5, -26, 0.5, -13)  -- Adjusted center position
         }):Play()
     end)
     
@@ -552,13 +552,13 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
         
         TweenService:Create(iconGlow, hoverTweenInfo, {
             BackgroundTransparency = 0.85,
-            Size = UDim2.new(0, 40, 0, 40),
-            Position = UDim2.new(0, 18, 0.5, -20)
+            Size = UDim2.new(0, 28, 0, 28),  -- Return to landscape base size
+            Position = UDim2.new(0, 10, 0.5, -14)  -- Return to landscape base position
         }):Play()
         
         TweenService:Create(iconContainer, hoverTweenInfo, {
-            Size = UDim2.new(0, 36, 0, 36),
-            Position = UDim2.new(0, 20, 0.5, -18)
+            Size = UDim2.new(0, 24, 0, 24),  -- Return to landscape base size
+            Position = UDim2.new(0, 12, 0.5, -12)  -- Return to landscape base position
         }):Play()
         
         TweenService:Create(label, hoverTweenInfo, {
@@ -566,8 +566,8 @@ local function createToggleSystem(parent, labelText, settingValue, iconData)
         }):Play()
         
         TweenService:Create(toggleBg, hoverTweenInfo, {
-            Size = UDim2.new(0, 52, 0, 30),
-            Position = UDim2.new(0.5, -26, 0.5, -15)
+            Size = UDim2.new(0, 50, 0, 24),  -- Return to landscape compact size
+            Position = UDim2.new(0.5, -25, 0.5, -12)  -- Return to landscape base position
         }):Play()
     end)
     
@@ -716,14 +716,16 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     gridContainer.Name = "GridContainer"
     gridContainer.Parent = layoutFrame
     gridContainer.BackgroundTransparency = 1
-    gridContainer.Size = UDim2.new(1, 0, 0, 120)  -- Two-row layout
+    gridContainer.Size = UDim2.new(1, 0, 0, 58)  -- Single row with 3 columns
     gridContainer.LayoutOrder = 1
     
     local gridLayout = Instance.new("UIGridLayout")
     gridLayout.Parent = gridContainer
-    gridLayout.CellSize = UDim2.new(0.48, 0, 0, 50)  -- Each cell takes ~48% width
-    gridLayout.CellPadding = UDim2.new(0.02, 0, 0, 8) -- Small gaps between cells
+    gridLayout.CellSize = UDim2.new(0.32, 0, 0, 50)  -- Three columns instead of two
+    gridLayout.CellPadding = UDim2.new(0.01, 0, 0, 4) -- Smaller gaps
     gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+    gridLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 
     -- Luck Boost Frame with modern design and colored icon (in grid)
     local luckFrame = createStyledFrame(gridContainer, "LuckBoostFrame", UDim2.new(1, 0, 1, 0))
@@ -797,6 +799,34 @@ function GUIHandler.createAdvancedPanel(parent, Settings)
     advStatsText.Text = "💰 Money: ₡0 | 🏆 Rare: 0 | 👑 Legendary: 0"
     advStatsText.TextColor3 = GUIStyles.Colors.Text
     advStatsText.TextScaled = true
+
+    return {
+        frame = AdvancedFrame,
+        luckButton = luckButton,
+        luckToggleBg = luckToggleBg,
+        luckIndicator = luckIndicator,
+        luckSubtitle = luckSubtitle,
+        luckIconContainer = luckIconContainer,
+        luckStatusDot = luckStatusDot,
+        luckIndicatorShadow = luckIndicatorShadow,
+        weatherButton = weatherButton,
+        weatherToggleBg = weatherToggleBg,
+        weatherIndicator = weatherIndicator,
+        weatherSubtitle = weatherSubtitle,
+        weatherIconContainer = weatherIconContainer,
+        weatherStatusDot = weatherStatusDot,
+        weatherIndicatorShadow = weatherIndicatorShadow,
+        smartButton = smartButton,
+        smartToggleBg = smartToggleBg,
+        smartIndicator = smartIndicator,
+        smartSubtitle = smartSubtitle,
+        smartIconContainer = smartIconContainer,
+        smartStatusDot = smartStatusDot,
+        smartIndicatorShadow = smartIndicatorShadow,
+        fishValueTextBox = fishValueTextBox,
+        advStatsText = advStatsText
+    }
+end
 
     return {
         frame = AdvancedFrame,
